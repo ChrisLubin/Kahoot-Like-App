@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { KahootInitialComponent } from './components/initial/initial.component';
+import { InitialComponent } from './components/initial/initial.component';
 
 const routes: Routes = [
-  { path: '', component: KahootInitialComponent }
+  { path: '', component: InitialComponent }
 ];
 
 @NgModule({

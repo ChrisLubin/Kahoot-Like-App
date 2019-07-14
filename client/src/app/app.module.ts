@@ -3,12 +3,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { KahootInitialComponent } from './components/initial/initial.component';
+import { InitialComponent } from './components/initial/initial.component';
+import { JoinGameComponent } from './components/join-game/join-game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    KahootInitialComponent
+    InitialComponent,
+    JoinGameComponent
   ],
   imports: [
     BrowserModule,

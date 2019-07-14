@@ -1,0 +1,5 @@
+<div id="container" class="general">
+    <input *ngIf="!joiningGame" id="gameCode" type="number" placeholder="Game Code">
+    <button *ngIf="!joiningGame" id="join" (click)="attemptJoinGame()">{{ joinButtonText }}</button>
+    <span *ngIf="joiningGame" class="general" [@fadeInOut]>Please wait...</span>
+</div>

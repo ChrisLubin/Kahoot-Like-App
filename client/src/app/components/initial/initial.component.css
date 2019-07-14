@@ -45,13 +45,6 @@
     border-radius: 20px;
 }
 
-#enterGameCode {
-    display: flex;
-    align-items: center;
-    background: white;
-    padding: 5px;
-}
-
 button {
     cursor: pointer;
     padding: 15px;
@@ -64,31 +57,4 @@ button {
     background: #5A6AFF;
     color: white;
     font-size: 27px;
-}
-
-#gameCode {
-    height: 100%;
-    font-size: inherit;
-    font-family: Arial, Helvetica, sans-serif;
-    border: none;
-    outline: none;
-    margin: 0;
-}
-
-/* Disable native browser increase/decrease arrows */
-#gameCode::-webkit-inner-spin-button, #gameCode::-webkit-outer-spin-button {
-    appearance: none;
-}
-
-#join {
-    color: white;
-    background: #5A6AFF;
-    outline: inherit;
-    border: inherit;
-    border-radius: 15px;
-    font-family: inherit;
-}
-
-#join:hover, #join:active {
-    background: #4e5de0;
 }

@@ -13,23 +13,14 @@ import { blockInitialRender } from '../../animations/blockInitialRender.animatio
   ]
 })
 
-export class KahootInitialComponent implements OnInit {
+export class InitialComponent implements OnInit {
   private joinGame: boolean; // True if user clicks first join game button
-  private joiningGame: boolean; // True if user attempts to join a game
-  private gameCode: number;
-  private joinButtonText: string;
 
   public ngOnInit(): void {
     this.joinGame = false;
-    this.joiningGame = false;
-    this.joinButtonText = "Join";
   }
 
   public toggleJoinGame(): void {
     this.joinGame = !this.joinGame;
-  }
-
-  public attemptJoinGame(): void {
-    this.joiningGame = true;
   }
 }
