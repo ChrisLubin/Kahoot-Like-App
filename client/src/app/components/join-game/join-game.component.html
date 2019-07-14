@@ -1,9 +1,9 @@
 <div id="grid">
-    <div *ngIf="!validGameCode" id="invalidCode" [@fadeInOut]>
+    <div *ngIf="!validGamePin" id="invalidPin" [@fadeInOut]>
         <span>{{ invalidText }}</span>
     </div>
     <div id="mainContainer" class="general">
-        <input *ngIf="!joiningGame" [(ngModel)]="gameCode" (ngModelChange)="checkInput()" id="gameCode" placeholder="Game Code">
+        <input *ngIf="!joiningGame" [(ngModel)]="gamePin" (ngModelChange)="checkInput()" id="gamePin" placeholder="Game Pin">
         <button *ngIf="!joiningGame" id="join" (click)="attemptJoinGame()">Join</button>
         <span *ngIf="joiningGame" class="general" [@fadeInOut]>Please wait...</span>
     </div>

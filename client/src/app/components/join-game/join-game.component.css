@@ -4,14 +4,14 @@
     grid-template-columns: 1fr;
     grid-template-rows: repeat(3, 1fr);
     grid-template-areas:
-    "invalidCode"
+    "invalidPin"
     "mainContainer"
     "mainContainer";
 }
 
-#invalidCode {
+#invalidPin {
     display: flex;
-    grid-area: invalidCode;
+    grid-area: invalidPin;
     height: 100%;
     justify-content: center;
     color: #F89797 !important;
@@ -37,7 +37,7 @@
     border-radius: 20px;
 }
 
-#gameCode {
+#gamePin {
     height: 100%;
     font-size: inherit;
     font-family: inherit;
@@ -47,7 +47,7 @@
 }
 
 /* Disable native browser increase/decrease arrows */
-#gameCode::-webkit-inner-spin-button, #gameCode::-webkit-outer-spin-button {
+#gamePin::-webkit-inner-spin-button, #gamePin::-webkit-outer-spin-button {
     appearance: none;
 }
 

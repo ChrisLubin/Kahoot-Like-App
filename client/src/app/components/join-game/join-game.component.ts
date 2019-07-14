@@ -11,54 +11,54 @@ import { fadeInOut } from '../../animations/fadeInOut.animation';
 })
 export class JoinGameComponent implements OnInit {
   private joiningGame: boolean; // True if user attempts to join a game
-  private gameCode: string;
-  private gameCodeRegex: RegExp;
-  private validGameCode: boolean;
+  private gamePin: string;
+  private gamePinRegex: RegExp;
+  private validGamePin: boolean;
   private invalidText: string;
 
   public ngOnInit(): void {
     this.joiningGame = false;
-    this.gameCodeRegex = /^[0-9]*$/;
-    this.validGameCode = true;
+    this.gamePinRegex = /^[0-9]*$/;
+    this.validGamePin = true;
   }
 
   public checkInput(): void {
     // Clears invalid text when input empty
-    if (this.gameCode.length === 0) {
-      this.validGameCode = true;
+    if (this.gamePin.length === 0) {
+      this.validGamePin = true;
       this.invalidText = "";
       return;
     }
 
     // Validation checks
-    if (!this.gameCode.match(this.gameCodeRegex)) {
-      // If game code is not only numbers
-      this.validGameCode = false;
+    if (!this.gamePin.match(this.gamePinRegex)) {
+      // If game pin is not only numbers
+      this.validGamePin = false;
       this.invalidText = "Numbers only please";
       return;
-    } else if (this.gameCode.length !== 5) {
-      this.validGameCode = false;
-      this.invalidText = "Code must be 5 integers";
+    } else if (this.gamePin.length !== 5) {
+      this.validGamePin = false;
+      this.invalidText = "Pin must be 5 integers";
       return;
     }
 
-    this.validGameCode = true;
+    this.validGamePin = true;
   }
 
   public attemptJoinGame(): void {
     try {
       // Validation checks
-      if (!this.validGameCode) {
+      if (!this.validGamePin) {
         return;
-      } else if (this.gameCode.length <= 0) {
+      } else if (this.gamePin.length <= 0) {
         // User entered something blank
-        this.validGameCode = false;
+        this.validGamePin = false;
         this.invalidText = "Enter something please";
         return;
       }
     } catch(err) {
-      // User entered something blank (typeof gameCode was undefined)
-      this.validGameCode = false;
+      // User entered something blank (typeof gamePin was undefined)
+      this.validGamePin = false;
       this.invalidText = "Enter something please";
       return;
     }
