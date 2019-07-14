@@ -2,9 +2,14 @@
     <div id="header">
         <h1>Welcome to my Kahoot game!</h1>
     </div>
-    <div id="buttons">
-        <button>Join a game</button>
-        <button>Create a game</button>
+    <div id="buttons" [@blockInitialRender]>
+        <div *ngIf="joinGame" id="enterGameCode" class="general" [@fadeInOut]>
+            <input *ngIf="!joiningGame" [(ngModel)]="gameCode" id="gameCode" type="number" placeholder="Game Code">
+            <button *ngIf="!joiningGame" id="join" (click)="attemptJoinGame()">{{ joinButtonText }}</button>
+            <span *ngIf="joiningGame" class="general" [@fadeInOut]>Please wait...</span>
+        </div>
+        <button *ngIf="!joinGame" class="general mainButton" (click)="toggleJoinGame()">Join a game</button>
+        <button *ngIf="!joinGame" class="general mainButton">Create a game</button>
     </div>
     <div>
     </div>
