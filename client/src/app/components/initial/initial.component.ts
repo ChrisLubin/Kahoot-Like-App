@@ -3,9 +3,9 @@ import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { blockInitialRender } from '../../animations/blockInitialRender.animation';
 
 @Component({
-  selector: 'app-kahoot-initial',
-  templateUrl: './kahoot-initial.component.html',
-  styleUrls: ['./kahoot-initial.component.css'],
+  selector: 'app-initial',
+  templateUrl: './initial.component.html',
+  styleUrls: ['./initial.component.css'],
   animations: [
     fadeInOut,
     // Work around so buttons aren't animated on page load
@@ -19,7 +19,7 @@ export class KahootInitialComponent implements OnInit {
   private gameCode: number;
   private joinButtonText: string;
 
-  private ngOnInit(): void {
+  public ngOnInit(): void {
     this.joinGame = false;
     this.joiningGame = false;
     this.joinButtonText = "Join";

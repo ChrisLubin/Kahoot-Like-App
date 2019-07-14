@@ -4,7 +4,7 @@
     </div>
     <div id="buttons" [@blockInitialRender]>
         <div *ngIf="joinGame" id="enterGameCode" class="general" [@fadeInOut]>
-            <input *ngIf="!joiningGame" [(ngModel)]="gameCode" id="gameCode" type="number" placeholder="Game Code">
+            <input *ngIf="!joiningGame" id="gameCode" type="number" placeholder="Game Code">
             <button *ngIf="!joiningGame" id="join" (click)="attemptJoinGame()">{{ joinButtonText }}</button>
             <span *ngIf="joiningGame" class="general" [@fadeInOut]>Please wait...</span>
         </div>

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KahootInitialComponent } from './kahoot-initial.component';
+import { KahootInitialComponent } from './initial.component';
 
 describe('KahootInitialComponent', () => {
   let component: KahootInitialComponent;
