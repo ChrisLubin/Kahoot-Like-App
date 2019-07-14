@@ -1,5 +1,12 @@
-<div id="container" class="general">
-    <input *ngIf="!joiningGame" id="gameCode" type="number" placeholder="Game Code">
-    <button *ngIf="!joiningGame" id="join" (click)="attemptJoinGame()">{{ joinButtonText }}</button>
-    <span *ngIf="joiningGame" class="general" [@fadeInOut]>Please wait...</span>
+<div id="grid">
+    <div *ngIf="!validGameCode" id="invalidCode" [@fadeInOut]>
+        <span>{{ invalidText }}</span>
+    </div>
+    <div id="mainContainer" class="general">
+        <input *ngIf="!joiningGame" [(ngModel)]="gameCode" (ngModelChange)="checkInput()" id="gameCode" placeholder="Game Code">
+        <button *ngIf="!joiningGame" id="join" (click)="attemptJoinGame()">Join</button>
+        <span *ngIf="joiningGame" class="general" [@fadeInOut]>Please wait...</span>
+    </div>
+    <div>
+    </div>
 </div>
