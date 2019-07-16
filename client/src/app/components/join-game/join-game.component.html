@@ -5,7 +5,7 @@
     <div id="mainContainer" class="general">
         <input *ngIf="!joiningGame" [(ngModel)]="gamePin" (ngModelChange)="checkInput()" id="gamePin" placeholder="Game Pin">
         <button *ngIf="!joiningGame" id="join" (click)="attemptJoinGame()">Join</button>
-        <span *ngIf="joiningGame" class="general" [@fadeInOut]>Please wait...</span>
+        <span *ngIf="joiningGame" id="loading" class="general" [@fadeInOut]>Please wait...</span>
     </div>
     <div>
     </div>

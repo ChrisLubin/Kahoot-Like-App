@@ -45,16 +45,16 @@
     border-radius: 20px;
 }
 
-button {
+.mainButton {
     cursor: pointer;
     padding: 15px;
     background: white;
-    color: #5A6AFF;
+    color: #7C8AFF;
     transition: .15s;
 }
 
 .mainButton:hover, .mainButton:active {
-    background: #5A6AFF;
+    background: #7C8AFF;
     color: white;
     font-size: 27px;
 }
