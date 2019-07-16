@@ -7,7 +7,7 @@ app.listen(PORT, () => console.log('Server started...'));
 // Middleware
 app.use((req, res, next) => {
   // Bypass CORS error on client
-  res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:4200');
+  res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:4200'); // Your client root url here
   next();
 });
 

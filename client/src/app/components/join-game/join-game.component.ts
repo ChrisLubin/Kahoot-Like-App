@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GameService } from 'src/app/services/game.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 
 @Component({
@@ -9,12 +10,15 @@ import { fadeInOut } from '../../animations/fadeInOut.animation';
     fadeInOut
   ]
 })
+
 export class JoinGameComponent implements OnInit {
   private joiningGame: boolean; // True if user attempts to join a game
   private gamePin: string;
   private gamePinRegex: RegExp;
   private validGamePin: boolean;
   private invalidText: string;
+
+  constructor(private gameService: GameService) { }
 
   public ngOnInit(): void {
     this.joiningGame = false;
@@ -65,6 +69,10 @@ export class JoinGameComponent implements OnInit {
 
     this.joiningGame = true;
 
-    // Make get request to server...
+    // Make GET request to server
+    this.gameService.joinGame(this.gamePin)
+      .subscribe(res => {
+        console.log(res);
+      });
   }
 }
