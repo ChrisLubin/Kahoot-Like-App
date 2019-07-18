@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from 'src/app/services/game.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
+import { fadeInOutPage } from '../../animations/fadeInOutPage.animation';
+import { animateTimer, displayStatusTimer } from '../../models/config';
 
 @Component({
   selector: 'app-join-game',
   templateUrl: './join-game.component.html',
   styleUrls: ['./join-game.component.css'],
   animations: [
-    fadeInOut
+    fadeInOut,
+    fadeInOutPage
   ]
 })
 
@@ -17,6 +20,8 @@ export class JoinGameComponent implements OnInit {
   private gamePinRegex: RegExp;
   private validGamePin: boolean;
   private invalidText: string;
+  private joinStatus;
+  private swapPage: boolean;
 
   constructor(private gameService: GameService) { }
 
@@ -24,6 +29,13 @@ export class JoinGameComponent implements OnInit {
     this.joiningGame = false;
     this.gamePinRegex = /^[0-9]*$/;
     this.validGamePin = true;
+    this.joinStatus = {
+      message: <string>"Loading...",
+      status: <string>"",
+      animate1: <boolean>true,
+      animate2: <boolean>false
+    }
+    this.swapPage = false;
   }
 
   public checkInput(): void {
@@ -75,11 +87,11 @@ export class JoinGameComponent implements OnInit {
       switch (res.status) {
         case 200:
           // Game found
-          
+          this.toggleJoinStatusMessage("Joining game!", "joined");
           break;
         default:
           // Received http status code that wasn't expected
-          
+          this.toggleJoinStatusMessage("Oops, something went wrong!", "error");
           break;
       }
     },
@@ -87,21 +99,68 @@ export class JoinGameComponent implements OnInit {
       switch (error.status) {
         case 422:
           // Invalid game pin
-          
+          this.toggleJoinStatusMessage("Invalid pin.", "error");
           break;
         case 404:
           // Game not found
-          
+          this.toggleJoinStatusMessage("Game with pin not found.", "error");
           break;
         case 0:
           // Could not connect to server
-
+          this.toggleJoinStatusMessage("Could not connect to server.", "error");
           break;
         default:
           // Received http status code that wasn't expected
-          
+          this.toggleJoinStatusMessage("Oops, something went wrong!", "error");
           break;
       }
     });
+  }
+
+  private toggleJoinStatusMessage(message:string, status:string):void {
+    // Delays so transitions are smooth in and out of join status messages
+    setTimeout(() => {
+      // Swap which status message element gets shown for smooth transitions
+      if (this.joinStatus.animate1) {
+        this.joinStatus.animate1 = false;
+        setTimeout(() => {
+          this.joinStatus.animate2 = true;
+          this.joinStatus.message = message;
+          this.joinStatus.status = status;
+        }, animateTimer)
+
+        setTimeout(() => {
+          this.joinStatus.animate2 = false;
+        }, animateTimer + displayStatusTimer);
+      } else {
+        this.joinStatus.animate2 = false;
+        setTimeout(() => {
+          this.joinStatus.animate1 = true;
+          this.joinStatus.message = message;
+          this.joinStatus.status = status;
+        }, animateTimer)
+
+        setTimeout(() => {
+          this.joinStatus.animate1 = false;
+        }, animateTimer + displayStatusTimer);
+      }
+
+      if (status !== "joined") {
+        // Go back to enter game pin view
+        setTimeout(() => {
+          this.joiningGame = false;
+          this.joinStatus.status = "";
+          this.joinStatus.message = "Loading...";
+          this.joinStatus.animate2 = true;
+        }, animateTimer + displayStatusTimer + animateTimer);
+      } else {
+        // Go to joined game view
+        setTimeout(() => {
+          this.joinStatus.message = "";
+          this.joinStatus.animate2 = true;
+          this.swapPage = true;
+        }, animateTimer + displayStatusTimer + animateTimer);
+      }
+    }, (2 * animateTimer));
   }
 }

@@ -25,7 +25,10 @@
     grid-area: mainContainer;
     align-items: center;
     background: white;
+    font-family: Arial, Helvetica, sans-serif;
     padding: 5px;
+    color: #7C8AFF;
+    z-index: 1;
 }
 
 .general {
@@ -66,7 +69,39 @@
     background: #4E5DE0;
 }
 
-#loading {
+.foundGame, .gameError {
     padding: 5px;
-    color: #7C8AFF;
+    border: none;
+    color: white !important;
+}
+
+.foundGame {
+    background: #64BF6A !important;
+}
+
+.gameError {
+    background: #FF5252 !important;
+}
+
+.loading {
+    font-family: inherit;
+    font-size: 25px;
+    padding: 14px;
+}
+
+#joinGameTransition {
+    display: flex;
+    height: fit-content;
+    width: fit-content;
+    color: #64BF6A;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2px;
+    background:#64BF6A;
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 0;
+    margin-top: 39px;
 }
