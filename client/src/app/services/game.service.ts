@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { SERVER_ROOT } from '../models/config';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class GameService {
-  readonly SERVER_ROOT: string = "http://127.0.0.1:8080"; // Your backend server root url here
+  readonly SERVER_ROOT: string = SERVER_ROOT;
 
   constructor(private http: HttpClient) { }
 

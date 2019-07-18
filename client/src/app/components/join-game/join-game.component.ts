@@ -71,8 +71,37 @@ export class JoinGameComponent implements OnInit {
 
     // Make GET request to server
     this.gameService.joinGame(this.gamePin)
-      .subscribe(res => {
-        console.log(res);
-      });
+    .subscribe(res => {
+      switch (res.status) {
+        case 200:
+          // Game found
+          
+          break;
+        default:
+          // Received http status code that wasn't expected
+          
+          break;
+      }
+    },
+    error => {
+      switch (error.status) {
+        case 422:
+          // Invalid game pin
+          
+          break;
+        case 404:
+          // Game not found
+          
+          break;
+        case 0:
+          // Could not connect to server
+
+          break;
+        default:
+          // Received http status code that wasn't expected
+          
+          break;
+      }
+    });
   }
 }
