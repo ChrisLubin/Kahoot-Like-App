@@ -3,7 +3,7 @@
         <h1>Welcome to my Kahoot game!</h1>
     </div>
     <div id="buttons" [@blockInitialRender]>
-        <app-join-game *ngIf="joinGame" [@fadeInOut]></app-join-game>
+        <app-join-game *ngIf="joinGame" (goBack)="toggleJoinGame()"></app-join-game>
         <button *ngIf="!joinGame" class="general mainButton" (click)="toggleJoinGame()">Join a game</button>
         <button *ngIf="!joinGame" class="general mainButton">Create a game</button>
     </div>

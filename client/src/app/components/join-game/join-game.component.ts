@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { GameService } from 'src/app/services/game.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { fadeInOutPage } from '../../animations/fadeInOutPage.animation';
@@ -22,6 +22,7 @@ export class JoinGameComponent implements OnInit {
   private invalidText: string;
   private joinStatus;
   private swapPage: boolean;
+  @Output() goBack = new EventEmitter<string>();
 
   constructor(private gameService: GameService) { }
 
@@ -162,5 +163,9 @@ export class JoinGameComponent implements OnInit {
         }, animateTimer + displayStatusTimer + animateTimer);
       }
     }, (2 * animateTimer));
+  }
+
+  private goBackToMain():void {
+    this.goBack.next();
   }
 }

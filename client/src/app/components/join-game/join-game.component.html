@@ -4,6 +4,7 @@
     </div>
     <div *ngIf="!swapPage" id="mainContainer" class="general" [ngClass]="{ foundGame: joinStatus.status === 'joined', gameError: joinStatus.status === 'error' }">
         <input *ngIf="!joiningGame && joinStatus.status !== 'joined'" [(ngModel)]="gamePin" (ngModelChange)="checkInput()" id="gamePin" placeholder="Game Pin">
+        <button *ngIf="!joiningGame && joinStatus.status !== 'joined'" id="cancel" (click)="goBackToMain()">Cancel</button>
         <button *ngIf="!joiningGame && joinStatus.status !== 'joined'" id="join" (click)="attemptJoinGame()">Join</button>
         <span *ngIf="joiningGame && joinStatus.animate1" class="loading" [@fadeInOut]>{{ joinStatus.message }}</span>
         <span *ngIf="joiningGame && joinStatus.animate2" class="loading" [@fadeInOut]>{{ joinStatus.message }}</span>
