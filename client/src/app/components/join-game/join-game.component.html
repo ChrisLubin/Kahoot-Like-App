@@ -1,16 +1,25 @@
 <div id="grid">
-    <div *ngIf="!validGamePin" id="invalidPin" [@fadeInOut]>
+    <div *ngIf="!validGamePin || !validUsername" id="invalidPin" [@fadeInOut]>
         <span>{{ invalidText }}</span>
     </div>
-    <div *ngIf="!swapPage" id="mainContainer" class="general" [ngClass]="{ foundGame: joinStatus.status === 'joined', gameError: joinStatus.status === 'error' }">
-        <input *ngIf="!joiningGame && joinStatus.status !== 'joined'" [(ngModel)]="gamePin" (ngModelChange)="checkInput()" id="gamePin" placeholder="Game Pin">
-        <button *ngIf="!joiningGame && joinStatus.status !== 'joined'" id="cancel" (click)="goBackToMain()">Cancel</button>
-        <button *ngIf="!joiningGame && joinStatus.status !== 'joined'" id="join" (click)="attemptJoinGame()">Join</button>
-        <span *ngIf="joiningGame && joinStatus.animate1" class="loading" [@fadeInOut]>{{ joinStatus.message }}</span>
-        <span *ngIf="joiningGame && joinStatus.animate2" class="loading" [@fadeInOut]>{{ joinStatus.message }}</span>
+    <div *ngIf="!swapPage" class="container general" [ngClass]="{ foundGame: foundStatus.status === 'found' || foundStatus.status === 'connected', gameError: foundStatus.status === 'error' }">
+        <!-- Input game pin view -->
+        <div class="container" *ngIf="!findingGame && foundStatus.status !== 'found'">
+            <input [(ngModel)]="gamePin" (ngModelChange)="checkGamePinInput()" placeholder="Game Pin">
+            <button id="cancel" (click)="goBackToMain()">Cancel</button>
+            <button class="join" (click)="findGame()">Find</button>
+        </div>
+        <!-- Input username view -->
+        <div class="container" *ngIf="foundGame && !connectingToGame">
+            <input [(ngModel)]="username" (ngModelChange)="checkUsernameInput()" placeholder="Username">
+            <button class="join" (click)="joinGame()">Join</button>
+        </div>
+        <!-- Status messages -->
+        <span *ngIf="(findingGame || connectingToGame) && foundStatus.animate1" class="loading" [@fadeInOut]>{{ foundStatus.message }}</span>
+        <span *ngIf="(findingGame || connectingToGame) && foundStatus.animate2" class="loading" [@fadeInOut]>{{ foundStatus.message }}</span>
     </div>
     <!-- Transition div -->
-    <div *ngIf="joinStatus.status === 'joined' && !swapPage" id="joinGameTransition" class="loading" [@fadeInOutPage]>
+    <div *ngIf="!swapPage" id="joinGameTransition" class="loading" [@fadeInOutPage]>
         <span></span>
     </div>
 </div>

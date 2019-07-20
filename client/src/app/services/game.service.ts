@@ -12,7 +12,7 @@ export class GameService {
 
   constructor(private http: HttpClient) { }
 
-  public joinGame(pin: string):Observable<any> {
+  public findGame(pin: string):Observable<any> {
     return this.http.get<any>(`${this.SERVER_ROOT}/join/${pin}`, {observe: 'response'});
   }
 }

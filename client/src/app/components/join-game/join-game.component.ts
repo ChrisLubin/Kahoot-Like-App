@@ -15,23 +15,30 @@ import { animateTimer, displayStatusTimer } from '../../models/config';
 })
 
 export class JoinGameComponent implements OnInit {
-  private joiningGame: boolean; // True if user attempts to join a game
+  private findingGame: boolean;
+  private foundGame: boolean;
+  private connectingToGame: boolean;
   private gamePin: string;
+  private username: string;
   private gamePinRegex: RegExp;
   private validGamePin: boolean;
+  private validUsername: boolean;
   private invalidText: string;
-  private joinStatus;
+  private foundStatus;
   private swapPage: boolean;
   @Output() goBack = new EventEmitter<string>();
 
   constructor(private gameService: GameService) { }
 
   public ngOnInit(): void {
-    this.joiningGame = false;
+    this.findingGame = false;
+    this.foundGame = false;
+    this.connectingToGame = false;
     this.gamePinRegex = /^[0-9]*$/;
     this.validGamePin = true;
-    this.joinStatus = {
-      message: <string>"Loading...",
+    this.validUsername = true;
+    this.foundStatus = {
+      message: <string>"Searching...",
       status: <string>"",
       animate1: <boolean>true,
       animate2: <boolean>false
@@ -39,7 +46,7 @@ export class JoinGameComponent implements OnInit {
     this.swapPage = false;
   }
 
-  public checkInput(): void {
+  private checkGamePinInput(): void {
     // Clears invalid text when input empty
     if (this.gamePin.length === 0) {
       this.validGamePin = true;
@@ -62,12 +69,28 @@ export class JoinGameComponent implements OnInit {
     this.validGamePin = true;
   }
 
-  public attemptJoinGame(): void {
+  private checkUsernameInput(): void {
+    // Validation checks
+    if (this.username.length === 0) {
+      this.validUsername = true;
+      this.invalidText = "";
+      return;
+    } else if (this.username.length > 10) {
+      this.validUsername = false;
+      this.invalidText = "Username is too long.";
+      return;
+    }
+
+    this.username = this.username.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // Sanitize
+    this.validUsername = true;
+  }
+
+  private findGame(): void {
     try {
       // Validation checks
       if (!this.validGamePin) {
         return;
-      } else if (this.gamePin.length <= 0) {
+      } else if (this.gamePin.length === 0) {
         // User entered something blank
         this.validGamePin = false;
         this.invalidText = "Enter something please";
@@ -80,19 +103,19 @@ export class JoinGameComponent implements OnInit {
       return;
     }
 
-    this.joiningGame = true;
+    this.findingGame = true;
 
     // Make GET request to server
-    this.gameService.joinGame(this.gamePin)
+    this.gameService.findGame(this.gamePin)
     .subscribe(res => {
       switch (res.status) {
         case 200:
           // Game found
-          this.toggleJoinStatusMessage("Joining game!", "joined");
+          this.updateStatusMessage("Found game!", "found");
           break;
         default:
           // Received http status code that wasn't expected
-          this.toggleJoinStatusMessage("Oops, something went wrong!", "error");
+          this.updateStatusMessage("Oops, something went wrong!", "error");
           break;
       }
     },
@@ -100,68 +123,98 @@ export class JoinGameComponent implements OnInit {
       switch (error.status) {
         case 422:
           // Invalid game pin
-          this.toggleJoinStatusMessage("Invalid pin.", "error");
+          this.updateStatusMessage("Invalid pin.", "error");
           break;
         case 404:
           // Game not found
-          this.toggleJoinStatusMessage("Game with pin not found.", "error");
+          this.updateStatusMessage("Game with pin not found.", "error");
           break;
         case 0:
           // Could not connect to server
-          this.toggleJoinStatusMessage("Could not connect to server.", "error");
+          this.updateStatusMessage("Could not connect to server.", "error");
           break;
         default:
           // Received http status code that wasn't expected
-          this.toggleJoinStatusMessage("Oops, something went wrong!", "error");
+          this.updateStatusMessage("Oops, something went wrong!", "error");
           break;
       }
     });
   }
 
-  private toggleJoinStatusMessage(message:string, status:string):void {
+  private joinGame():void {
+    try {
+      // Validation checks
+      if (!this.validUsername) {
+        return;
+      } else if (this.username.length === 0) {
+        // User entered something blank
+        this.validUsername = false;
+        this.invalidText = "Enter something please";
+        return;
+      }
+    } catch(err) {
+      // User entered something blank (typeof username was undefined)
+      this.validUsername = false;
+      this.invalidText = "Enter something please";
+      return;
+    }
+
+
+    this.connectingToGame = true;
+    this.foundStatus.animate1 = true;
+    this.foundStatus.message = "Connecting...";
+
+    // Connect to game via WebSocket
+    this.updateStatusMessage("Connected!", "connected");
+  }
+
+  private updateStatusMessage(message:string, status:string):void {
     // Delays so transitions are smooth in and out of join status messages
     setTimeout(() => {
       // Swap which status message element gets shown for smooth transitions
-      if (this.joinStatus.animate1) {
-        this.joinStatus.animate1 = false;
+      if (this.foundStatus.animate1) {
+        this.foundStatus.animate1 = false;
         setTimeout(() => {
-          this.joinStatus.animate2 = true;
-          this.joinStatus.message = message;
-          this.joinStatus.status = status;
+          this.foundStatus.animate2 = true;
+          this.foundStatus.message = message;
+          this.foundStatus.status = status;
         }, animateTimer)
 
         setTimeout(() => {
-          this.joinStatus.animate2 = false;
+          this.foundStatus.animate2 = false;
         }, animateTimer + displayStatusTimer);
       } else {
-        this.joinStatus.animate2 = false;
+        this.foundStatus.animate2 = false;
         setTimeout(() => {
-          this.joinStatus.animate1 = true;
-          this.joinStatus.message = message;
-          this.joinStatus.status = status;
+          this.foundStatus.animate1 = true;
+          this.foundStatus.message = message;
+          this.foundStatus.status = status;
         }, animateTimer)
 
         setTimeout(() => {
-          this.joinStatus.animate1 = false;
+          this.foundStatus.animate1 = false;
         }, animateTimer + displayStatusTimer);
       }
 
-      if (status !== "joined") {
-        // Go back to enter game pin view
-        setTimeout(() => {
-          this.joiningGame = false;
-          this.joinStatus.status = "";
-          this.joinStatus.message = "Loading...";
-          this.joinStatus.animate2 = true;
-        }, animateTimer + displayStatusTimer + animateTimer);
-      } else {
-        // Go to joined game view
-        setTimeout(() => {
-          this.joinStatus.message = "";
-          this.joinStatus.animate2 = true;
+      setTimeout(() => {
+        // What to do after displaying status message
+        if (status === "connected") {
+          // Go to joined-game view
           this.swapPage = true;
-        }, animateTimer + displayStatusTimer + animateTimer);
-      }
+        } else if (status === "found") {
+          // Ask for username
+          this.foundStatus.message = "";
+          this.foundStatus.status = "";
+          this.foundStatus.animate2 = false;
+          this.foundGame = true;
+        } else {
+          // Go back to game pin view
+          this.findingGame = false;
+          this.foundStatus.status = "";
+          this.foundStatus.message = "Searching...";
+          this.foundStatus.animate2 = true;
+        }
+      }, animateTimer + displayStatusTimer + animateTimer);
     }, (2 * animateTimer));
   }
 
