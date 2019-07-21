@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { InitialComponent } from './components/initial/initial.component';
 import { JoinGameComponent } from './components/join-game/join-game.component';
 import { GameService } from './services/game.service';
+import { CreateGameComponent } from './components/create-game/create-game.component';
 import { JoinedGameComponent } from './components/joined-game/joined-game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InitialComponent,
+    CreateGameComponent,
     JoinGameComponent,
     JoinedGameComponent
   ],

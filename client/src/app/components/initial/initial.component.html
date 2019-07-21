@@ -4,9 +4,10 @@
     </div>
     <div id="buttons" [@blockInitialRender]>
         <app-join-game *ngIf="joinGame" (goBack)="toggleJoinGame()" (hideHeader)="hideHeader()"></app-join-game>
-        <button *ngIf="!joinGame" class="general mainButton" (click)="toggleJoinGame()">Join a game</button>
-        <button *ngIf="!joinGame" class="general mainButton">Create a game</button>
+        <button *ngIf="!joinGame && !createGame" class="general mainButton" (click)="toggleJoinGame()">Join a game</button>
+        <button *ngIf="!joinGame && !createGame" class="general mainButton" (click)="toggleCreateGame()">Create a game</button>
     </div>
-    <div>
+    <app-create-game id="createGame" *ngIf="createGame" (goBack)="toggleCreateGame()"></app-create-game>
+    <div *ngIf="!createGame">
     </div>
 </div>

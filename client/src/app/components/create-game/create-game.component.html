@@ -1,0 +1,26 @@
+<div class="stick-bottom" [@fadeInOut]>
+    <div class="container">
+        <div id="currentQuestions" class="miniContainer">
+            <ul>
+                <li class="question" *ngFor="let question of questions" [@fadeInOut]>
+                    {{ question.question }} <i id="deleteQuestion" class="fas fa-times"></i>
+                </li>
+            </ul>
+        </div>
+        <div id="createQuestion" class="miniContainer">
+            <input type="text" id="enterQuestion" class="enterQuestionChild" placeholder="Enter Question">
+            <div id="choices" class="enterQuestionChild">
+                <input id="choice1" class="choice" type="text" placeholder="Choice 1">
+                <input id="choice2" class="choice" type="text" placeholder="Choice 2">
+                <input id="choice3" class="choice" type="text" placeholder="Choice 3">
+                <input id="choice4" class="choice" type="text" placeholder="Choice 4">
+            </div>
+            <div id="addQuestionContainer" class="enterQuestionChild">
+                <button>Add Question</button>
+            </div>
+        </div>
+        <div id="submit" class="miniContainer">
+        
+        </div>
+    </div>
+</div>
