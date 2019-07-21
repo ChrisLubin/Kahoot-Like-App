@@ -35,16 +35,19 @@ export class JoinedGameComponent implements OnInit {
       clearInterval(this.removeAnimation);
       this.addAnimation = setInterval(() => {
         this.status = this.status.concat('.'); // Add period to end
-      }, 333);
+      }, 150);
       setTimeout(() => {
         clearInterval(this.addAnimation);
         this.removeAnimation = setInterval(() => {
           this.status = this.status.slice(0, -1); // Remove last character
-        }, 333)
-      }, 999);
+        }, 150)
+      }, 450);
       setTimeout(() => {
         clearInterval(this.removeAnimation);
-        if (!this.gameStarted) { this.startStatusAnimation(); } // Keep looping
-      }, 2010);
+        if (!this.gameStarted) { 
+          this.status = "Waiting for host to start game"; // Keeps animation in sync
+          this.startStatusAnimation(); // Keeps looping
+        }
+      }, 900);
   }
 }
