@@ -27,6 +27,7 @@ export class JoinGameComponent implements OnInit {
   private foundStatus;
   private swapPage: boolean;
   @Output() goBack = new EventEmitter<string>();
+  @Output() hideHeader = new EventEmitter<string>();
 
   constructor(private gameService: GameService) { }
 
@@ -112,6 +113,7 @@ export class JoinGameComponent implements OnInit {
         case 200:
           // Game found
           this.updateStatusMessage("Found game!", "found");
+          this.gameService.setGamePin(this.gamePin);
           break;
         default:
           // Received http status code that wasn't expected
@@ -201,6 +203,7 @@ export class JoinGameComponent implements OnInit {
         if (status === "connected") {
           // Go to joined-game view
           this.swapPage = true;
+          this.hideMainHeader();
         } else if (status === "found") {
           // Ask for username
           this.foundStatus.message = "";
@@ -220,5 +223,9 @@ export class JoinGameComponent implements OnInit {
 
   private goBackToMain():void {
     this.goBack.next();
+  }
+
+  private hideMainHeader():void {
+    this.hideHeader.next();
   }
 }

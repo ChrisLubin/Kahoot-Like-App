@@ -1,0 +1,153 @@
+.container {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    grid-template-columns: 1;
+    grid-template-rows: repeat(5, 1fr);
+    background: #64BF6A;
+}
+
+.header {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 5px;
+    margin: 0;
+}
+
+.rounded {
+    border-radius: 20px;
+    width: 80vw;
+    background: lightblue;
+}
+
+#generalInfo {
+    display: flex;
+    flex-direction: column;
+    height: 60%;
+    grid-row: 1/2;
+    align-self: center;
+    align-items: center;
+    justify-self: center;
+    justify-content: center;
+}
+
+#players {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    grid-row: 2/4;
+    align-self: center;
+    justify-self: center;
+    justify-content: center;
+}
+
+#playerList {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 60%;
+}
+
+ul {
+    display: flex;
+    align-content: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    height: 90%;
+    width: 90%;
+    font-family: Georgia, Times, "Times New Roman", serif;
+
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+.player {
+    height: fit-content;
+    width: fit-content;
+    margin: 10px;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+#answers {
+    display: flex;
+    padding: 2.5vw;
+    height: 60%;
+    width: 75vw;
+    grid-row: 4/6;
+    align-self: center;
+    justify-self: center;
+    align-items: center;
+}
+
+#choices {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 10px;
+}
+
+.choice {
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-self: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    border: solid black 2px;
+}
+
+.choice:hover, .choice:active {
+    cursor: pointer;
+}
+
+#choice1 {
+    background: #4CBAB6;
+    border-top-left-radius: 15px;
+}
+
+#choice1:hover, #choice1:active {
+    background: #16B1AC;
+}
+
+#choice2 {
+    background: #FC7F74;
+    border-top-right-radius: 15px;
+}
+
+#choice2:hover, #choice2:active {
+    background: #F75C4E;
+}
+
+#choice3 {
+    background: #EDD155;
+    border-bottom-left-radius: 15px;
+}
+
+#choice3:hover, #choice3:active {
+    background: #EECC33;
+}
+
+#choice4 {
+    background: #AC69B3;
+    border-bottom-right-radius: 15px;
+}
+
+#choice4:hover, #choice4:active {
+    background: #A654AF;
+}
+
+#status {
+    display: flex;
+    grid-row: 4/6;
+    align-self: center;
+    justify-content: center;
+}

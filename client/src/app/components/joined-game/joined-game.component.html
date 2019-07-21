@@ -1,0 +1,37 @@
+<div *ngIf="show" class="container">
+    <!-- General info -->
+    <div id="generalInfo" class="rounded" [@fadeInOut]>
+        <h4 class="header">Game Pin {{ gamePin }}</h4>
+        <h4 class="header">Player Count {{ playerList.length }}</h4>
+    </div>
+    <!-- Player usernames in game -->
+    <div id="players" [@fadeInOut]>
+        <h3 class="header">Players</h3>
+        <div id="playerList" class="rounded">
+            <ul>
+                <li *ngFor="let player of playerList" class="player" [@fadeInOut]>
+                    {{ player }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Answer choices -->
+    <div *ngIf="gameStarted" id="answers" class="rounded" [@fadeInOut]>
+        <div id="choices">
+            <div id="choice1" class="choice">
+                Choice 1
+            </div>
+            <div id="choice2" class="choice">
+                Choice 2
+            </div>
+            <div id="choice3" class="choice">
+                Choice 3
+            </div>
+            <div id="choice4" class="choice">
+                Choice 4
+            </div>
+        </div>
+    </div>
+    <!-- Status message -->
+    <h1 *ngIf="!gameStarted" id="status" class="header">{{ status }}</h1>
+</div>

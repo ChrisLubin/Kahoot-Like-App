@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { InitialComponent } from './components/initial/initial.component';
 import { JoinGameComponent } from './components/join-game/join-game.component';
 import { GameService } from './services/game.service';
+import { JoinedGameComponent } from './components/joined-game/joined-game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InitialComponent,
-    JoinGameComponent
+    JoinGameComponent,
+    JoinedGameComponent
   ],
   imports: [
     BrowserModule,

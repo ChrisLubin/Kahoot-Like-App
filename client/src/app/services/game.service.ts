@@ -9,10 +9,19 @@ import { SERVER_ROOT } from '../models/config';
 
 export class GameService {
   readonly SERVER_ROOT: string = SERVER_ROOT;
+  private gamePin: string;
 
   constructor(private http: HttpClient) { }
 
   public findGame(pin: string):Observable<any> {
     return this.http.get<any>(`${this.SERVER_ROOT}/join/${pin}`, {observe: 'response'});
+  }
+
+  public getGamePin():string {
+    return this.gamePin;
+  }
+
+  public setGamePin(pin:string) {
+    this.gamePin = pin;
   }
 }

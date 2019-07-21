@@ -1,9 +1,10 @@
 import { trigger, style, animate, transition } from '@angular/animations';
+import { animateTimerPage } from '../models/config';
 
 export const fadeInOutPage = trigger('fadeInOutPage', [
   transition(":leave", [
     // :leave is an alias for '* => void'
-    animate(2000, style({
+    animate(animateTimerPage, style({
       height: 5000,
       width: 5000,
       top: 0,
