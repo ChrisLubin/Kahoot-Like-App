@@ -15,8 +15,12 @@
         padding: 7px !important;
     }
 
-    button {
+    #addQuestionBtn {
         font-size: 12px !important;
+    }
+
+    #cancelBtn, #startBtn {
+        font-size: 15px !important;
     }
 }
 
@@ -34,7 +38,7 @@
         padding: 8px !important;
     }
 
-    button {
+    #addQuestionBtn {
         font-size: 15px !important;
     }
 }
@@ -111,6 +115,14 @@
 input {
     border: none;
     outline: none;
+}
+
+button {
+    outline: none;
+    border: none;
+    height: fit-content;
+    cursor: pointer;
+    border-radius: 15px;
 }
 
 #createQuestion {
@@ -195,20 +207,15 @@ input {
     grid-area: addQuestion;
 }
 
-button {
-    outline: none;
-    border: none;
-    height: fit-content;
-    border-radius: 15px;
+#addQuestionBtn {
     font-family: inherit;
     font-size: 20px;
-    cursor: pointer;
     padding: 10px;
     background: white;
     color: #7C8AFF;
 }
 
-button:hover, button:active {
+#addQuestionBtn:hover, #addQuestionBtn:active {
     padding: 7px;
     border: solid white 3px;
     background: #7C8AFF;
@@ -216,6 +223,32 @@ button:hover, button:active {
 }
 
 #submit {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
     height: 100%;
     width: 100%;
+}
+
+#cancelBtn, #startBtn {
+    font-size: 20px;
+    color: white;
+    padding: 7px;
+    border: solid white 3px;
+}
+
+#cancelBtn {
+    background: #FF5252;
+}
+
+#cancelBtn:hover, #cancelBtn:active {
+    background: #F80000;
+}
+
+#startBtn {
+    background: #64BF6A;
+}
+
+#startBtn:hover, #startBtn:active {
+    background: #3F9F31;
 }

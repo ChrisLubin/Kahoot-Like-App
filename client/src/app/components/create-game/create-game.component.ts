@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { Question } from '../../models/question.interface';
 
@@ -10,10 +10,15 @@ import { Question } from '../../models/question.interface';
 })
 export class CreateGameComponent implements OnInit {
   private questions: Question[];
+  @Output() goBack = new EventEmitter<string>();
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit():void {
     this.questions = [{ question: "Question 1", choices: [{ choice: 'Choice 1' }, { choice: 'Choice 2' }]}, { question: "Question 2", choices: [{ choice: 'Choice 1' }, { choice: 'Choice 2' }]}]; // Temporary
+  }
+
+  private goBackToMain():void {
+    this.goBack.next();
   }
 }

@@ -16,11 +16,12 @@
                 <input id="choice4" class="choice" type="text" placeholder="Choice 4">
             </div>
             <div id="addQuestionContainer" class="enterQuestionChild">
-                <button>Add Question</button>
+                <button id="addQuestionBtn">Add Question</button>
             </div>
         </div>
         <div id="submit" class="miniContainer">
-        
+            <button id="cancelBtn" (click)="goBackToMain()">Cancel</button>
+            <button id="startBtn">Start Game</button>
         </div>
     </div>
 </div>
