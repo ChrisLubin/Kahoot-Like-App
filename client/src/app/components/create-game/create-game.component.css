@@ -207,6 +207,10 @@ button {
     grid-area: addQuestion;
 }
 
+.invalidField::placeholder {
+    color: red;
+}
+
 #addQuestionBtn {
     font-family: inherit;
     font-size: 20px;
