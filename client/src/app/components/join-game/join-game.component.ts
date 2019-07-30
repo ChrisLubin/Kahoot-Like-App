@@ -179,8 +179,17 @@ export class JoinGameComponent implements OnInit {
     this.foundStatus.animate1 = true;
     this.foundStatus.message = "Connecting...";
 
-    // Connect to game via WebSocket
-    this.webSocketService.connect();
+    // Check if name is taken
+    this.gameService.getUsers(this.gamePin)
+      .then(users => {
+        const nameTaken = users.some(user => user.username.toLowerCase() === this.username.toLowerCase());
+        if (nameTaken) {
+          this.updateStatusMessage("Username taken!", "could not connect");
+        } else {
+          // Connect to game via WebSocket
+          this.webSocketService.connect();
+        }
+      });
   }
 
   private updateStatusMessage(message:string, status:string):void {
