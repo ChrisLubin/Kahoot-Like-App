@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { Question } from '../../models/question.interface';
 import { CreateQuestionInputs } from '../../models/create-question';
@@ -9,7 +9,7 @@ import { CreateQuestionInputs } from '../../models/create-question';
   styleUrls: ['./create-game.component.css'],
   animations: [fadeInOut]
 })
-export class CreateGameComponent implements OnInit {
+export class CreateGameComponent implements OnInit, OnDestroy {
   private questions: Question[];
   private inputFields;
   @Output() goBack = new EventEmitter<string>();
@@ -19,6 +19,14 @@ export class CreateGameComponent implements OnInit {
   public ngOnInit():void {
     this.inputFields = CreateQuestionInputs;
     this.questions = [];
+  }
+
+  public ngOnDestroy():void {
+    // Reset fields
+    for (let key of Object.keys(this.inputFields)) {
+      this.inputFields[key].input = "";
+      this.inputFields[key].valid = true;
+    }
   }
 
   private addQuestion():void {
