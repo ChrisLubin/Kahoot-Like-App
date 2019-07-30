@@ -52,6 +52,7 @@ export class JoinGameComponent implements OnInit {
     this.connect = this.webSocketService.listenToConnect().subscribe(connected => {
       if (connected) {
         this.updateStatusMessage("Connected!", "connected");
+        this.gameService.setMyUsername(this.username);
         this.connect.unsubscribe(); // No need to listen to connect events anymore
       } else {
         this.updateStatusMessage("Could not connect!", "could not connect");
@@ -120,39 +121,39 @@ export class JoinGameComponent implements OnInit {
 
     // Make GET request to server
     this.gameService.findGame(this.gamePin)
-    .subscribe(res => {
-      switch (res.status) {
-        case 200:
-          // Game found
-          this.updateStatusMessage("Found game!", "found");
-          this.gameService.setGamePin(this.gamePin);
-          break;
-        default:
-          // Received http status code that wasn't expected
-          this.updateStatusMessage("Oops, something went wrong!", "error");
-          break;
-      }
-    },
-    error => {
-      switch (error.status) {
-        case 422:
-          // Invalid game pin
-          this.updateStatusMessage("Invalid pin.", "error");
-          break;
-        case 404:
-          // Game not found
-          this.updateStatusMessage("Game with pin not found.", "error");
-          break;
-        case 0:
-          // Could not connect to server
-          this.updateStatusMessage("Could not connect to server.", "error");
-          break;
-        default:
-          // Received http status code that wasn't expected
-          this.updateStatusMessage("Oops, something went wrong!", "error");
-          break;
-      }
-    });
+      .subscribe(res => {
+        switch (res.status) {
+          case 200:
+            // Game found
+            this.updateStatusMessage("Found game!", "found");
+            this.gameService.setGamePin(this.gamePin);
+            break;
+          default:
+            // Received http status code that wasn't expected
+            this.updateStatusMessage("Oops, something went wrong!", "error");
+            break;
+        }
+      },
+      error => {
+        switch (error.status) {
+          case 422:
+            // Invalid game pin
+            this.updateStatusMessage("Invalid pin.", "error");
+            break;
+          case 404:
+            // Game not found
+            this.updateStatusMessage("Game with pin not found.", "error");
+            break;
+          case 0:
+            // Could not connect to server
+            this.updateStatusMessage("Could not connect to server.", "error");
+            break;
+          default:
+            // Received http status code that wasn't expected
+            this.updateStatusMessage("Oops, something went wrong!", "error");
+            break;
+        }
+      });
   }
 
   private joinGame():void {

@@ -10,6 +10,7 @@ import { SERVER_ROOT } from '../models/config';
 export class GameService {
   readonly SERVER_ROOT: string = SERVER_ROOT;
   private gamePin: string;
+  private username: string;
 
   constructor(private http: HttpClient) { }
 
@@ -23,5 +24,17 @@ export class GameService {
 
   public setGamePin(pin:string) {
     this.gamePin = pin;
+  }
+
+  public getMyUsername():string {
+    return this.username;
+  }
+
+  public setMyUsername(username:string) {
+    this.username = username;
+  }
+
+  public getUsers():Promise<any> {
+    return this.http.get<any>(`${this.SERVER_ROOT}/getUsers`).toPromise();
   }
 }

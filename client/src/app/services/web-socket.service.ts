@@ -32,7 +32,7 @@ export class WebSocketService {
       this.socket.on('connect_error', () => {
         if (!this.firstConnect) { return } // Dont emit to subscritions if it's a reconnect error
         subscriber.next(false);
-    });
+      });
     });
   }
 
@@ -44,8 +44,8 @@ export class WebSocketService {
     return new Observable(subscriber => {
       this.socket.on(event, data => {
         subscriber.next(data);
-      })
-    })
+      });
+    });
   }
 
   public emit(event: string, data: any):void {

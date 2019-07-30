@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from '../../services/game.service';
+import { WebSocketService } from '../../services/web-socket.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { animateTimerPage } from '../../models/config';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-joined-game',
@@ -12,22 +14,40 @@ import { animateTimerPage } from '../../models/config';
 export class JoinedGameComponent implements OnInit {
   private show: boolean;
   private gamePin: string;
-  private playerList: string[];
-  private gameStarted: boolean;
-  private status: string;
+  private username: string;
+  private playerList: string[] = [];
+  private gameStarted: boolean = false;
+  private status: string = "Getting other players...";
   private removeTextAnimation;
   private addTextAnimation;
+  private newPlayers: Subscription;
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
-  public ngOnInit(): void {
+  public async ngOnInit() {
     setTimeout(() => {
       this.show = true;
     }, animateTimerPage);
-    this.playerList = ['Chris', 'Paul', 'Fred', 'Ginobili', 'Ginobili', 'Ginobili', 'Ginobili', 'Ginobili', 'Ginobili', 'Ginobili']; // Temporary
     this.gamePin = this.gameService.getGamePin();
-    this.gameStarted = false;
-    this.status = "Waiting for host to start game";
+    this.username = this.gameService.getMyUsername();
+    this.playerList.push(`${this.username} (You)`);
+    await this.gameService.getUsers()
+      .then(users => {
+        this.status = "Waiting for host to start game";
+        users.forEach(user => {
+          this.playerList.push(user);
+        });
+      });
+    this.webSocketService
+      .emit("join room", {
+        pin: this.gamePin,
+        username: this.username
+      });
+    this.newPlayers = this.webSocketService
+      .listen('new player')
+      .subscribe(player => {
+        this.playerList.push(player);
+      });
     this.startStatusAnimation();
   }
 
