@@ -1,8 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { GameService } from 'src/app/services/game.service';
+import { WebSocketService } from '../../services/web-socket.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { fadeInOutPage } from '../../animations/fadeInOutPage.animation';
 import { animateTimer, displayStatusTimer } from '../../models/config';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-join-game',
@@ -26,10 +28,11 @@ export class JoinGameComponent implements OnInit {
   private invalidText: string;
   private foundStatus;
   private swapPage: boolean;
+  private connect: Subscription;
   @Output() goBack = new EventEmitter<string>();
   @Output() hideHeader = new EventEmitter<string>();
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService, private webSocketService:WebSocketService) { }
 
   public ngOnInit(): void {
     this.findingGame = false;
@@ -45,6 +48,15 @@ export class JoinGameComponent implements OnInit {
       animate2: <boolean>false
     }
     this.swapPage = false;
+
+    this.connect = this.webSocketService.listenToConnect().subscribe(connected => {
+      if (connected) {
+        this.updateStatusMessage("Connected!", "connected");
+        this.connect.unsubscribe(); // No need to listen to connect events anymore
+      } else {
+        this.updateStatusMessage("Could not connect!", "could not connect");
+      }
+    });
   }
 
   private checkGamePinInput(): void {
@@ -167,7 +179,7 @@ export class JoinGameComponent implements OnInit {
     this.foundStatus.message = "Connecting...";
 
     // Connect to game via WebSocket
-    this.updateStatusMessage("Connected!", "connected");
+    this.webSocketService.connect();
   }
 
   private updateStatusMessage(message:string, status:string):void {
@@ -204,6 +216,12 @@ export class JoinGameComponent implements OnInit {
           // Go to joined-game view
           this.swapPage = true;
           this.hideMainHeader();
+        }  else if(status === "could not connect") {
+          // Go back to username prompt
+          this.foundStatus.message = "";
+          this.foundStatus.status = "";
+          this.foundStatus.animate2 = false;
+          this.connectingToGame = false;
         } else if (status === "found") {
           // Ask for username
           this.foundStatus.message = "";

@@ -2,7 +2,7 @@
     <div *ngIf="!validGamePin || !validUsername" id="invalidPin" [@fadeInOut]>
         <span>{{ invalidText }}</span>
     </div>
-    <div *ngIf="!swapPage" class="container general" [ngClass]="{ foundGame: foundStatus.status === 'found' || foundStatus.status === 'connected', gameError: foundStatus.status === 'error' }">
+    <div *ngIf="!swapPage" class="container general" [ngClass]="{ foundGame: foundStatus.status === 'found' || foundStatus.status === 'connected', gameError: foundStatus.status === 'error' || foundStatus.status === 'could not connect' }">
         <!-- Input game pin view -->
         <div class="container" *ngIf="!findingGame && foundStatus.status !== 'found'">
             <input [(ngModel)]="gamePin" (ngModelChange)="checkGamePinInput()" placeholder="Game Pin">

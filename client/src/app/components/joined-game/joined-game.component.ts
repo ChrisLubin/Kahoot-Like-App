@@ -15,8 +15,8 @@ export class JoinedGameComponent implements OnInit {
   private playerList: string[];
   private gameStarted: boolean;
   private status: string;
-  private removeAnimation;
-  private addAnimation;
+  private removeTextAnimation;
+  private addTextAnimation;
 
   constructor(private gameService: GameService) { }
 
@@ -32,18 +32,18 @@ export class JoinedGameComponent implements OnInit {
   }
 
   private startStatusAnimation():void {
-      clearInterval(this.removeAnimation);
-      this.addAnimation = setInterval(() => {
+      clearInterval(this.removeTextAnimation);
+      this.addTextAnimation = setInterval(() => {
         this.status = this.status.concat('.'); // Add period to end
       }, 150);
       setTimeout(() => {
-        clearInterval(this.addAnimation);
-        this.removeAnimation = setInterval(() => {
+        clearInterval(this.addTextAnimation);
+        this.removeTextAnimation = setInterval(() => {
           this.status = this.status.slice(0, -1); // Remove last character
         }, 150)
       }, 450);
       setTimeout(() => {
-        clearInterval(this.removeAnimation);
+        clearInterval(this.removeTextAnimation);
         if (!this.gameStarted) { 
           this.status = "Waiting for host to start game"; // Keeps animation in sync
           this.startStatusAnimation(); // Keeps looping

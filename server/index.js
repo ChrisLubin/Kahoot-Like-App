@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => console.log('Server started...'));
+server.listen(PORT, () => console.log('Server started...'));
 
 // Middleware
 app.use((req, res, next) => {
@@ -20,4 +22,8 @@ app.use((req, res) => {
       .json({
         message: "Unknown request"
       });
+});
+
+io.on('connection', () => {
+  console.log('User connected...');
 });

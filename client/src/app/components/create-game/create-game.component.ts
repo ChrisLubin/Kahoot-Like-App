@@ -24,7 +24,7 @@ export class CreateGameComponent implements OnInit {
   private addQuestion():void {
     const valid = this.areInputsValid();
 
-    if (!valid) { return; }
+    if (!valid) { return }
 
     const question:Question = {
       question: this.inputFields.question.input,
@@ -71,11 +71,7 @@ export class CreateGameComponent implements OnInit {
       }
     }
 
-    if (valid) {
-      return true;
-    } else {
-      return false;
-    }
+    return valid;
   }
 
   private goBackToMain():void {

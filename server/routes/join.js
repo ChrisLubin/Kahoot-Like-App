@@ -22,6 +22,15 @@ router.get('/:pin', (req, res) => {
 
     // Query database...
 
+    // Temporary (Tester for if game pin not found)
+    if (pin === "12345") {
+        res.status(404).json({
+            message: `Game with a pin of ${pin} was not found.`,
+            length: pin.length
+        });
+        return;
+    }
+
     // Send response with game questions & choices
     res.status(200).json({
         message: 'Join successful.',
