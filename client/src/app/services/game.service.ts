@@ -34,7 +34,7 @@ export class GameService {
     this.username = username;
   }
 
-  public getUsers():Promise<any> {
-    return this.http.get<any>(`${this.SERVER_ROOT}/getUsers`).toPromise();
+  public getUsers(pin: string):Promise<any> {
+    return this.http.get<any>(`${this.SERVER_ROOT}/getUsers/${pin}`).toPromise();
   }
 }

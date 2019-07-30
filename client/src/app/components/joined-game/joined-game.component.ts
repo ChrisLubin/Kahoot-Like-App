@@ -31,11 +31,11 @@ export class JoinedGameComponent implements OnInit {
     this.gamePin = this.gameService.getGamePin();
     this.username = this.gameService.getMyUsername();
     this.playerList.push(`${this.username} (You)`);
-    await this.gameService.getUsers()
+    await this.gameService.getUsers(this.gamePin)
       .then(users => {
         this.status = "Waiting for host to start game";
         users.forEach(user => {
-          this.playerList.push(user);
+          this.playerList.push(user.username);
         });
       });
     this.webSocketService

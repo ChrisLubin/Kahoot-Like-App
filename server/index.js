@@ -2,23 +2,25 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+const config = require('config');
 const PORT = process.env.PORT || 8080;
-const users = []; // Temporary
+const clientURL = config.get('clientRootURL');
+const connectDB = require('./db');
+const User = require('./models/user');
 
 server.listen(PORT, () => console.log('Server started...'));
+connectDB();
 
 // Middleware
 app.use((req, res, next) => {
   // Bypass CORS error on client
-  res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:4200'); // Your client root url here
+  res.setHeader('Access-Control-Allow-Origin', clientURL); // Your client root url here
   next();
 });
 
 // Routes
 app.use('/join', require('./routes/join'));
-app.use('/getUsers', (req, res) => {
-  res.send(users);
-});
+app.use('/getUsers', require('./routes/getUsers'));
 
 // No routes found for request
 app.use((req, res) => {
@@ -30,9 +32,12 @@ app.use((req, res) => {
 
 io.on('connection', socket => {
   socket.on('join room', data => {
-    console.log('User connected...');
     socket.join(data.pin, () => {
-      users.push(data.username);
+      const user = new User({
+        pin: data.pin,
+        username: data.username
+      });
+      user.save(); // Save to database
       socket.to(data.pin).emit('new player', data.username); // User emits their username to all other users in room
     });
   });
