@@ -36,6 +36,7 @@ export class CreateGameComponent implements OnInit, OnDestroy {
 
     const question:Question = {
       question: this.inputFields.question.input,
+      correctIndex: parseInt(this.inputFields.correctIndex.input),
       choices: [{
           choice: this.inputFields.choiceOne.input
         },
@@ -80,6 +81,10 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     }
 
     return valid;
+  }
+
+  private correctAnswerIsValid():void {
+    this.inputFields.correctIndex.valid = true;
   }
 
   private goBackToMain():void {

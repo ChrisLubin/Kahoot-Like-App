@@ -3,6 +3,10 @@ export const CreateQuestionInputs = {
       input: <string>"",
       valid: <boolean>true
     },
+    correctIndex: {
+      input: <string>"",
+      valid: <boolean>true
+    },
     choiceOne: {
       input: <string>"",
       valid: <boolean>true

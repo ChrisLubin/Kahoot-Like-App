@@ -203,12 +203,25 @@ button {
     display: flex;
     height: 100%;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     grid-area: addQuestion;
 }
 
 .invalidField::placeholder {
     color: red;
+}
+
+.invalidCorrectIndex {
+    color: red;
+}
+
+select {
+    color: #7C8AFF;
+    font-family: inherit;
+    font-size: 20px;
+    padding: 10px;
+    appearance: none;
+    border-radius: 15px;
 }
 
 #addQuestionBtn {
