@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SERVER_ROOT } from '../models/config';
+import { Question } from '../models/question.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,9 @@ export class GameService {
 
   public getUsers(pin: string):Promise<any> {
     return this.http.get<any>(`${this.SERVER_ROOT}/getUsers/${pin}`).toPromise();
+  }
+
+  public createGame(gameData: Question[]):Promise<any> {
+    return this.http.post<any>(`${this.SERVER_ROOT}/create`, gameData).toPromise();
   }
 }

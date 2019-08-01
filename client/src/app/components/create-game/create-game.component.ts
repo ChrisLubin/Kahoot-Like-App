@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/cor
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { Question } from '../../models/question.interface';
 import { CreateQuestionInputs } from '../../models/create-question';
+import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-create-game',
@@ -14,7 +15,7 @@ export class CreateGameComponent implements OnInit, OnDestroy {
   private inputFields;
   @Output() goBack = new EventEmitter<string>();
 
-  constructor() { }
+  constructor(private gameService: GameService) { }
 
   public ngOnInit():void {
     this.inputFields = CreateQuestionInputs;
@@ -85,6 +86,25 @@ export class CreateGameComponent implements OnInit, OnDestroy {
 
   private correctAnswerIsValid():void {
     this.inputFields.correctIndex.valid = true;
+  }
+
+  private createGame():void {
+    if (!this.questions.length) {
+      // No questions created
+      for (let key of Object.keys(this.inputFields)) {
+        if (!this.inputFields[key].input.trim()) {
+          // Show red on empty create question fields
+          this.inputFields[key].input = "";
+          this.inputFields[key].valid = false;
+        }
+      }
+      return;
+    }
+
+    this.gameService.createGame(this.questions)
+      .then(generatedPin => {
+        console.log(generatedPin);
+      });
   }
 
   private goBackToMain():void {

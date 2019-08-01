@@ -19,7 +19,7 @@
         font-size: 12px !important;
     }
 
-    #cancelBtn, #startBtn {
+    #cancelBtn, #createBtn {
         font-size: 15px !important;
     }
 }
@@ -247,7 +247,7 @@ select {
     width: 100%;
 }
 
-#cancelBtn, #startBtn {
+#cancelBtn, #createBtn {
     font-size: 20px;
     color: white;
     padding: 7px;
@@ -262,10 +262,10 @@ select {
     background: #F80000;
 }
 
-#startBtn {
+#createBtn {
     background: #64BF6A;
 }
 
-#startBtn:hover, #startBtn:active {
+#createBtn:hover, #createBtn:active {
     background: #3F9F31;
 }
