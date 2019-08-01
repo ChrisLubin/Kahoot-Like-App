@@ -12,14 +12,17 @@ server.listen(PORT, () => console.log('Server started...'));
 connectDB();
 
 // Middleware
+app.use(express.json()); // Parse JSON bodies (POST requests)
 app.use((req, res, next) => {
   // Bypass CORS error on client
   res.setHeader('Access-Control-Allow-Origin', clientURL); // Your client root url here
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
 
 // Routes
 app.use('/join', require('./routes/join'));
+app.use('/create', require('./routes/create'));
 app.use('/getUsers', require('./routes/getUsers'));
 
 // No routes found for request
