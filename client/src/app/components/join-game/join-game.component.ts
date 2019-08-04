@@ -199,7 +199,7 @@ export class JoinGameComponent implements OnInit {
           this.updateStatusMessage("Username taken!", "could not connect");
         } else {
           // Connect to game via WebSocket
-          this.webSocketService.connect();
+          this.webSocketService.connect(false);
         }
       });
   }

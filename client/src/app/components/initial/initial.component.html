@@ -1,4 +1,4 @@
-<div id="mainContainer">
+<div *ngIf="!createGame" id="mainContainer">
     <div id="header" *ngIf="showHeader">
         <h1>Welcome to my Kahoot game!</h1>
     </div>
@@ -7,7 +7,7 @@
         <button *ngIf="!joinGame && !createGame" class="general mainButton" (click)="toggleJoinGame()">Join a game</button>
         <button *ngIf="!joinGame && !createGame" class="general mainButton" (click)="toggleCreateGame()">Create a game</button>
     </div>
-    <app-create-game id="createGame" *ngIf="createGame" (goBack)="toggleCreateGame()"></app-create-game>
     <div *ngIf="!createGame">
     </div>
 </div>
+<app-create-game id="createGame" *ngIf="createGame" (goBack)="toggleCreateGame()" (hideHeader)="hideHeader()"></app-create-game>

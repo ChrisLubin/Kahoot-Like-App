@@ -10,10 +10,13 @@ import { GameService } from '../../services/game.service';
   styleUrls: ['./create-game.component.css'],
   animations: [fadeInOut]
 })
+
 export class CreateGameComponent implements OnInit, OnDestroy {
   private questions: Question[];
   private inputFields;
+  private gameCreated: boolean = false;
   @Output() goBack = new EventEmitter<string>();
+  @Output() hideHeader = new EventEmitter<string>();
 
   constructor(private gameService: GameService) { }
 
@@ -95,8 +98,11 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     }
 
     this.gameService.createGame(this.questions)
-      .then(generatedPin => {
-        console.log(generatedPin);
+      .then(game => {
+        this.gameService.setGamePin(game.pin);
+        this.gameService.setGame(game);
+        this.gameCreated = true;
+        this.hideHeader.next();
       });
   }
 

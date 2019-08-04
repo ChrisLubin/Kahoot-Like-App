@@ -10,6 +10,7 @@ import { JoinGameComponent } from './components/join-game/join-game.component';
 import { GameService } from './services/game.service';
 import { CreateGameComponent } from './components/create-game/create-game.component';
 import { JoinedGameComponent } from './components/joined-game/joined-game.component';
+import { CreatedGameComponent } from './components/created-game/created-game.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { JoinedGameComponent } from './components/joined-game/joined-game.compon
     InitialComponent,
     CreateGameComponent,
     JoinGameComponent,
-    JoinedGameComponent
+    JoinedGameComponent,
+    CreatedGameComponent
   ],
   imports: [
     BrowserModule,

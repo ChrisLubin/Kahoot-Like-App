@@ -1,34 +1,40 @@
-<div class="stick-bottom" [@fadeInOut]>
-    <div class="container">
-        <div id="currentQuestions" class="miniContainer">
-            <ul>
-                <li class="question" *ngFor="let question of questions" [@fadeInOut]>
-                    {{ question.question }} <i id="deleteQuestion" class="fas fa-times" (click)="deleteQuestion(question)"></i>
-                </li>
-            </ul>
+<div *ngIf="!gameCreated" class="stick-bottom" [@fadeInOut]>
+    <div class="mainContainer">
+        <div id="header">
+            <h1>Welcome to my Kahoot game!</h1>
         </div>
-        <div id="createQuestion" class="miniContainer">
-            <input type="text" id="enterQuestion" class="enterQuestionChild" [ngClass]="!inputFields.question.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.question.input" placeholder="Enter Question">
-            <div id="choices" class="enterQuestionChild">
-                <input id="choice1" class="choice" [ngClass]="!inputFields.choiceOne.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceOne.input" type="text" placeholder="Choice 1">
-                <input id="choice2" class="choice" [ngClass]="!inputFields.choiceTwo.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceTwo.input" type="text" placeholder="Choice 2">
-                <input id="choice3" class="choice" [ngClass]="!inputFields.choiceThree.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceThree.input" type="text" placeholder="Choice 3">
-                <input id="choice4" class="choice" [ngClass]="!inputFields.choiceFour.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceFour.input" type="text" placeholder="Choice 4">
+        <div class="container">
+            <div id="currentQuestions" class="miniContainer">
+                <ul>
+                    <li class="question" *ngFor="let question of questions" [@fadeInOut]>
+                        {{ question.question }} <i id="deleteQuestion" class="fas fa-times" (click)="deleteQuestion(question)"></i>
+                    </li>
+                </ul>
             </div>
-            <div id="addQuestionContainer" class="enterQuestionChild">
-                <select [ngClass]="!inputFields.correctIndex.valid ? 'invalidCorrectIndex' : ''" [(ngModel)]="inputFields.correctIndex.input" (ngModelChange)="correctAnswerIsValid()">
-                    <option value="" hidden disabled>Correct Answer</option>
-                    <option value="0">Choice 1</option>
-                    <option value="1">Choice 2</option>
-                    <option value="2">Choice 3</option>
-                    <option value="3">Choice 4</option>
-                </select>
-                <button id="addQuestionBtn" (click)="addQuestion()">Add Question</button>
+            <div id="createQuestion" class="miniContainer">
+                <input type="text" id="enterQuestion" class="enterQuestionChild" [ngClass]="!inputFields.question.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.question.input" placeholder="Enter Question">
+                <div id="choices" class="enterQuestionChild">
+                    <input id="choice1" class="choice" [ngClass]="!inputFields.choiceOne.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceOne.input" type="text" placeholder="Choice 1">
+                    <input id="choice2" class="choice" [ngClass]="!inputFields.choiceTwo.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceTwo.input" type="text" placeholder="Choice 2">
+                    <input id="choice3" class="choice" [ngClass]="!inputFields.choiceThree.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceThree.input" type="text" placeholder="Choice 3">
+                    <input id="choice4" class="choice" [ngClass]="!inputFields.choiceFour.valid ? 'invalidField' : ''" [(ngModel)]="inputFields.choiceFour.input" type="text" placeholder="Choice 4">
+                </div>
+                <div id="addQuestionContainer" class="enterQuestionChild">
+                    <select [ngClass]="!inputFields.correctIndex.valid ? 'invalidCorrectIndex' : ''" [(ngModel)]="inputFields.correctIndex.input" (ngModelChange)="correctAnswerIsValid()">
+                        <option value="" hidden disabled>Correct Answer</option>
+                        <option value="0">Choice 1</option>
+                        <option value="1">Choice 2</option>
+                        <option value="2">Choice 3</option>
+                        <option value="3">Choice 4</option>
+                    </select>
+                    <button id="addQuestionBtn" (click)="addQuestion()">Add Question</button>
+                </div>
             </div>
-        </div>
-        <div id="submit" class="miniContainer">
-            <button id="cancelBtn" (click)="goBackToMain()">Cancel</button>
-            <button id="createBtn" (click)="createGame()">Create Game</button>
+            <div id="submit" class="miniContainer">
+                <button id="cancelBtn" (click)="goBackToMain()">Cancel</button>
+                <button id="createBtn" (click)="createGame()">Create Game</button>
+            </div>
         </div>
     </div>
 </div>
+<app-created-game *ngIf="gameCreated"></app-created-game>

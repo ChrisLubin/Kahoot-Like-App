@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
 
   while (pinExists) {
     randomPin = Math.floor(Math.random()*90000) + 10000;
-    pinExists = await Game.findOne({pin: randomPin});
+    pinExists = await Game.findOne({ pin: randomPin });
   }
 
   const game = new Game({
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
   await game.save();
 
   res.status(200)
-    .json(randomPin);
+    .json(game);
 });
 
 function invalidRequestBody(res, message) {

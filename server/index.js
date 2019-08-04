@@ -45,6 +45,8 @@ app.use((req, res) => {
 io.on('connection', socket => {
   socket.on('join room', data => {
     socket.join(data.pin, () => {
+      if (!data.username) { return } // Host just wants to listen for players joining
+
       const username = data.username.trim().replace(/\s+/g,' '); // Remove excess spaces
       const user = new User({
         id: socket.id,
@@ -63,6 +65,9 @@ io.on('connection', socket => {
 
     const pin = rooms[0];
     const result = await User.findOne({ id: socket.id }).select('username');
+
+    if (!result) { return } // Host disconnected
+
     const username = result.username;
     socket.to(pin).emit('player left', username);
     await User.deleteOne({ id: socket.id }); // Doesn't work without await for some reason

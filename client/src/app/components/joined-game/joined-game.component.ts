@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./joined-game.component.css'],
   animations: [fadeInOut]
 })
+
 export class JoinedGameComponent implements OnInit {
   private show: boolean;
   private gamePin: string;

@@ -36,8 +36,14 @@ export class WebSocketService {
     });
   }
 
-  public connect():void {
+  public async connect(host: boolean):Promise<any> {
+    if (host) {
+      this.socket = await io(this.SERVER_ROOT);
+      return;
+    }
+
     this.socket.connect();
+    return;
   }
 
   public listen(event: string):Observable<any> {

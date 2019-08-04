@@ -1,0 +1,23 @@
+<div *ngIf="show" class="container" [@fadeInOut]>
+    <!-- General info -->
+    <div id="generalInfo" class="rounded">
+        <h4 class="header">Game Pin {{ pin }}</h4>
+        <h4 class="header">Player Count {{ playerList.length }}</h4>
+    </div>
+    <!-- Player usernames in game -->
+    <div id="players">
+        <h3 class="header">Players</h3>
+        <div id="playerList" class="rounded">
+            <ul>
+                <li *ngFor="let player of playerList" class="player" [@fadeInOut]>
+                    {{ player }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Status message/Start game button -->
+    <div id="footer" class="rounded">
+        <button *ngIf="!gameStarted && playerList.length > 0" id="startBtn">Start Game</button>
+        <h3 *ngIf="gameStarted || playerList.length === 0">{{ status }}</h3>
+    </div>
+</div>
