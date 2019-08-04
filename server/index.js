@@ -6,8 +6,8 @@ const config = require('config');
 const PORT = process.env.PORT || 8080;
 const clientURL = config.get('clientRootURL');
 const connectDB = require('./db');
+const Game = require('./models/game');
 const User = require('./models/user');
-const Game = require('./models/game'); // Temporary
 
 server.listen(PORT, () => console.log('Server started...'));
 connectDB();
@@ -45,12 +45,26 @@ app.use((req, res) => {
 io.on('connection', socket => {
   socket.on('join room', data => {
     socket.join(data.pin, () => {
+      const username = data.username.trim().replace(/\s+/g,' '); // Remove excess spaces
       const user = new User({
+        id: socket.id,
         pin: data.pin,
-        username: data.username
+        username: username
       });
       user.save(); // Save to database
-      socket.to(data.pin).emit('new player', data.username); // User emits their username to all other users in room
+      socket.to(data.pin).emit('new player', username); // User emits their username to all other users in room
     });
+  });
+
+  socket.on('disconnecting', async () => {
+    const rooms = Object.keys(socket.rooms);
+
+    if (rooms.length === 1) { return } // Do nothing because this is the first test connect socket from client
+
+    const pin = rooms[0];
+    const result = await User.findOne({ id: socket.id }).select('username');
+    const username = result.username;
+    socket.to(pin).emit('player left', username);
+    await User.deleteOne({ id: socket.id }); // Doesn't work without await for some reason
   });
 });

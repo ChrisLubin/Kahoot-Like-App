@@ -20,7 +20,8 @@ export class JoinedGameComponent implements OnInit {
   private status: string = "Getting other players...";
   private removeTextAnimation;
   private addTextAnimation;
-  private newPlayers: Subscription;
+  private newPlayer: Subscription;
+  private playerLeft: Subscription;
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
@@ -43,11 +44,12 @@ export class JoinedGameComponent implements OnInit {
         pin: this.gamePin,
         username: this.username
       });
-    this.newPlayers = this.webSocketService
+    this.newPlayer = this.webSocketService
       .listen('new player')
-      .subscribe(player => {
-        this.playerList.push(player);
-      });
+      .subscribe(player => this.playerList.push(player));
+    this.playerLeft = this.webSocketService
+      .listen('player left')
+      .subscribe(username => this.playerList = this.playerList.filter(player => player !== username));
     this.startStatusAnimation();
   }
 

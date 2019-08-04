@@ -85,6 +85,8 @@ export class JoinGameComponent implements OnInit {
   }
 
   private checkUsernameInput(): void {
+    this.username = this.username.trim().replace(/\s+/g,' '); // Remove excess spaces
+
     // Validation checks
     if (this.username.length === 0) {
       this.validUsername = true;
