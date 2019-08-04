@@ -1,5 +1,5 @@
 export interface Question {
     question: string,
-    correctIndex: number,
+    correctIndex?: number,
     choices: string[]
 }

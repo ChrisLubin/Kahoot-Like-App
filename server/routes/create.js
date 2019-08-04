@@ -37,7 +37,6 @@ router.post('/', async (req, res) => {
 
   const game = new Game({
     gameStarted: false,
-    gameEnded: false,
     gamePin: randomPin,
     questions: gameData
   });

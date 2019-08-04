@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const Game = require('../models/game');
 
-router.get('/:pin', (req, res) => {
+router.get('/:pin', async (req, res) => {
   const pin = req.params.pin;
   const regex = /^[0-9]*$/;
 
@@ -20,10 +21,10 @@ router.get('/:pin', (req, res) => {
     return;
   }
 
-  // Query database...
+  // Query database
+  const game = await Game.findOne({ gamePin: pin });
 
-  // Temporary (Tester for if game pin not found)
-  if (pin === "12345") {
+  if (!game) {
     res.status(404).json({
       message: `Game with a pin of ${pin} was not found.`,
       length: pin.length
@@ -31,10 +32,14 @@ router.get('/:pin', (req, res) => {
     return;
   }
 
+  // Remove correct answers from questions so client doesn't have it until all users answer question
+  game.questions.forEach(question => delete question.correctIndex);
+
   // Send response with game questions & choices
   res.status(200).json({
     message: 'Join successful.',
-    length: pin.length
+    length: pin.length,
+    game: game
   });
 });
 
