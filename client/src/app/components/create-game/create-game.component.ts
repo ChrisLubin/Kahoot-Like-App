@@ -38,19 +38,12 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     const question:Question = {
       question: this.inputFields.question.input,
       correctIndex: parseInt(this.inputFields.correctIndex.input),
-      choices: [{
-          choice: this.inputFields.choiceOne.input
-        },
-        {
-          choice: this.inputFields.choiceTwo.input
-        },
-        {
-          choice: this.inputFields.choiceThree.input
-        },
-        {
-          choice: this.inputFields.choiceFour.input
-        }]
-      };
+      choices: [
+        this.inputFields.choiceOne.input,
+        this.inputFields.choiceTwo.input,
+        this.inputFields.choiceThree.input,
+        this.inputFields.choiceFour.input
+      ]};
     this.questions.push(question);
 
     // Reset input fields

@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 8080;
 const clientURL = config.get('clientRootURL');
 const connectDB = require('./db');
 const User = require('./models/user');
+const Game = require('./models/game'); // Temporary
 
 server.listen(PORT, () => console.log('Server started...'));
 connectDB();
@@ -24,6 +25,14 @@ app.use((req, res, next) => {
 app.use('/join', require('./routes/join'));
 app.use('/create', require('./routes/create'));
 app.use('/getUsers', require('./routes/getUsers'));
+
+// Temporary
+app.use('/delete', async (req, res) => {
+  await User.deleteMany();
+  await Game.deleteMany();
+  res.status(200)
+    .json("Deleted");
+});
 
 // No routes found for request
 app.use((req, res) => {

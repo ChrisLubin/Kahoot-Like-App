@@ -9,19 +9,21 @@ router.post('/', async (req, res) => {
     // Request validation
     gameData.forEach(questionObj => {
       if (typeof questionObj.question === "undefined" || typeof questionObj.correctIndex === "undefined") {
-        invalidRequestBody(res);
-        return;
+        throw new Error("Question or correctIndex property not present.");
       }
 
-      questionObj.choices.forEach(choiceObj => {
-        if (typeof choiceObj.choice === "undefined") {
-          invalidRequestBody(res);
-          return;
-        }
-      });
+      if (questionObj.choices.length !== 4) {
+        throw new Error("The amount of choices was not 4.");
+      }
+      
+      const invalid = questionObj.choices.some(choice => typeof choice !== "string" || !choice);
+
+      if (invalid) {
+        throw new Error("All choices were not strings or a choice was an empty string.");
+      }
     });
   } catch(err) {
-    invalidRequestBody(res);
+    invalidRequestBody(res, err.message);
     return;
   }
 
@@ -34,6 +36,8 @@ router.post('/', async (req, res) => {
   }
 
   const game = new Game({
+    gameStarted: false,
+    gameEnded: false,
     gamePin: randomPin,
     questions: gameData
   });
@@ -43,10 +47,10 @@ router.post('/', async (req, res) => {
     .json(randomPin);
 });
 
-function invalidRequestBody(res) {
+function invalidRequestBody(res, message) {
   res.status(400)
     .json({
-      message: "Invalid request body."
+      message: message
     });
   return;
 }
