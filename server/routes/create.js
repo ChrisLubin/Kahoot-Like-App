@@ -32,12 +32,13 @@ router.post('/', async (req, res) => {
 
   while (pinExists) {
     randomPin = Math.floor(Math.random()*90000) + 10000;
-    pinExists = await Game.findOne({gamePin: randomPin});
+    pinExists = await Game.findOne({pin: randomPin});
   }
 
   const game = new Game({
     gameStarted: false,
-    gamePin: randomPin,
+    currentQuestionIndex: 0,
+    pin: randomPin,
     questions: gameData
   });
   await game.save();

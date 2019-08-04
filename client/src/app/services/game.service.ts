@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SERVER_ROOT } from '../models/config';
+import { Game } from '../models/game.interface';
 import { Question } from '../models/question.interface';
 
 @Injectable({
@@ -12,7 +13,7 @@ export class GameService {
   readonly SERVER_ROOT: string = SERVER_ROOT;
   private gamePin: string;
   private username: string;
-  private gameQuestions: Question[];
+  private game: Game;
 
   constructor(private http: HttpClient) { }
 
@@ -46,12 +47,12 @@ export class GameService {
     return this.http.post<any>(`${this.SERVER_ROOT}/create`, gameData).toPromise();
   }
 
-  public getGameQuestions(): Question[] {
-    return this.gameQuestions;
+  public getGame(): Game {
+    return this.game;
   }
 
-  public setGameQuestions(questions: Question[]): void {
-    this.gameQuestions = questions;
+  public setGame(game: Game): void {
+    this.game = game;
     return;
   }
 }

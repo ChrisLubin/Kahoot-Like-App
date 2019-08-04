@@ -22,7 +22,7 @@ router.get('/:pin', async (req, res) => {
   }
 
   // Query database
-  const game = await Game.findOne({ gamePin: pin });
+  const game = await Game.findOne({ pin: pin });
 
   if (!game) {
     res.status(404).json({

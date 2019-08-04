@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const gameSchema = new mongoose.Schema({
     gameStarted: Boolean,
-    gamePin: Number,
+    currentQuestionIndex: Number,
+    pin: Number,
     questions: {type:[Object]}
 });
 

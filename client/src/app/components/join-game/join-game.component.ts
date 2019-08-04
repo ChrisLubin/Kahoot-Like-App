@@ -5,7 +5,7 @@ import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { fadeInOutPage } from '../../animations/fadeInOutPage.animation';
 import { animateTimer, displayStatusTimer } from '../../models/config';
 import { Subscription } from 'rxjs';
-import { Question } from '../../models/question.interface';
+import { Game } from '../../models/game.interface';
 
 @Component({
   selector: 'app-join-game',
@@ -128,7 +128,7 @@ export class JoinGameComponent implements OnInit {
         switch (res.status) {
           case 200:
             // Game found
-            const questions: Question[] = res.body.game.questions;
+            const game: Game = res.body.game;
             const gameStarted = res.body.game.gameStarted;
 
             if (gameStarted) {
@@ -138,7 +138,7 @@ export class JoinGameComponent implements OnInit {
 
             this.updateStatusMessage("Found game!", "found");
             this.gameService.setGamePin(this.gamePin);
-            this.gameService.setGameQuestions(questions);
+            this.gameService.setGame(game);
             break;
           default:
             // Received http status code that wasn't expected
