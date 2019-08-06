@@ -3,6 +3,8 @@ import { GameService } from '../../services/game.service';
 import { WebSocketService } from '../../services/web-socket.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { animateTimerPage } from '../../models/config';
+import { Game } from '../../models/game.interface';
+import { Player } from '../../models/player.interface';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -14,16 +16,19 @@ import { Subscription } from 'rxjs';
 
 export class JoinedGameComponent implements OnInit {
   private show: boolean;
-  private gamePin: string;
   private username: string;
-  private playerList: string[] = [];
-  private gameStarted: boolean = false;
   private status: string = "Getting other players...";
   private removeTextAnimation;
   private addTextAnimation;
   private gameStart: Subscription;
   private newPlayer: Subscription;
   private playerLeft: Subscription;
+  private game: Game;
+  private gamePin: string;
+  private playerList: Player[] = [];
+  private gameStarted: boolean = false;
+  private currentQuestion: string;
+  private highestScore: number = 0;
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
@@ -31,14 +36,22 @@ export class JoinedGameComponent implements OnInit {
     setTimeout(() => {
       this.show = true;
     }, animateTimerPage);
+    this.game = this.gameService.getGame();
     this.gamePin = this.gameService.getGamePin();
     this.username = this.gameService.getMyUsername();
-    this.playerList.push(`${this.username} (You)`);
+    this.currentQuestion = this.game.questions[0].question;
+    this.playerList.push({
+      username: `${this.username} (You)`,
+      score: 0
+    });
     await this.gameService.getUsers(this.gamePin)
       .then(users => {
         this.status = "Waiting for host to start game";
         users.forEach(user => {
-          this.playerList.push(user.username);
+          this.playerList.push({
+            username: user.username,
+            score: 0
+          });
         });
       });
     this.webSocketService
@@ -51,10 +64,13 @@ export class JoinedGameComponent implements OnInit {
       .subscribe(() => this.gameStarted = true);
     this.newPlayer = this.webSocketService
       .listen('new player')
-      .subscribe(player => this.playerList.push(player));
+      .subscribe(player => this.playerList.push({
+        username: player,
+        score: 0
+      }));
     this.playerLeft = this.webSocketService
       .listen('player left')
-      .subscribe(username => this.playerList = this.playerList.filter(player => player !== username));
+      .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
     this.startStatusAnimation();
   }
 

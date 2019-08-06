@@ -1,22 +1,41 @@
-<div *ngIf="show" class="container">
+<div *ngIf="show" class="container" [@fadeInOut]>
     <!-- General info -->
-    <div id="generalInfo" class="rounded" [@fadeInOut]>
+    <div id="generalInfo" class="rounded">
         <h4 class="header">Game Pin {{ gamePin }}</h4>
         <h4 class="header">Player Count {{ playerList.length }}</h4>
     </div>
     <!-- Player usernames in game -->
-    <div id="players" [@fadeInOut]>
+    <div *ngIf="!gameStarted" id="playerContainer">
         <h3 class="header">Players</h3>
         <div id="playerList" class="rounded">
-            <ul>
+            <ul id="players">
                 <li *ngFor="let player of playerList" class="player" [@fadeInOut]>
-                    {{ player }}
+                    {{ player.username }}
                 </li>
             </ul>
         </div>
     </div>
+    <div *ngIf="gameStarted" class="miniGrid">
+        <div id="miniContainerOne">
+            <h3 class="header">Question</h3>
+            <div id="question" class="center rounded">{{ currentQuestion }}</div>
+        </div>
+        <div id="miniContainerTwo">
+            <h3 class="header">Scoreboard</h3>
+            <div id="scoreboard" class="center rounded">
+                <ul id="scores">
+                    <li *ngFor="let player of playerList" class="playerScore" [@fadeInOut]>
+                        <b>{{ player.username }}</b>
+                        <div id="scores">
+                            <span class="score" [style.width.%]="(player.score/highestScore * 100) - 2">{{ player.score }}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <!-- Answer choices -->
-    <div *ngIf="gameStarted" id="answers" class="rounded" [@fadeInOut]>
+    <div *ngIf="gameStarted" id="answers" class="rounded">
         <div id="choices">
             <div id="choice1" class="choice">
                 Choice 1

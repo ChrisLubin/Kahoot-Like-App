@@ -33,12 +33,11 @@
 
 #players {
     display: flex;
-    flex-direction: column;
     height: 100%;
     grid-row: 2/4;
-    align-self: center;
-    justify-self: center;
+    align-content: flex-start;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 #playerList {
@@ -51,9 +50,6 @@
 
 ul {
     display: flex;
-    align-content: flex-start;
-    justify-content: center;
-    flex-wrap: wrap;
     height: 90%;
     width: 90%;
     font-family: Georgia, Times, "Times New Roman", serif;
@@ -63,6 +59,15 @@ ul {
     overflow: auto;
 }
 
+#playerContainer {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    justify-self: center;
+    grid-row: 2/4;
+}
+
 .player {
     height: fit-content;
     width: fit-content;
@@ -70,6 +75,79 @@ ul {
     font-family: inherit;
     font-size: 20px;
     font-weight: 500;
+}
+
+.miniGrid {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: repeat(5, 1fr);
+    grid-row: 2/4;
+}
+
+.center {
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+
+#miniContainerOne {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    grid-column: 1;
+    grid-row: 1/2;
+}
+
+#question {
+    display: flex;
+    height: 100%;
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#miniContainerTwo {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    margin-top: 10px;
+    grid-column: 1;
+    grid-row: 2/6;
+}
+
+#scoreboard {
+    display: flex;
+    height: 100%;
+}
+
+#scores {
+    flex-direction: column;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
+
+.playerScore {
+    display: flex;
+    flex-direction: column;
+    width: 96%;
+    height: fit-content;
+    margin: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#scores {
+    width: 100%;
+}
+
+.score {
+    display: flex;
+    width: fit-content;
+    justify-content: center;
+    margin-top: 5px;
+    border: solid #3F9F31 1px;
+    background: #3F9F31;
 }
 
 #answers {
