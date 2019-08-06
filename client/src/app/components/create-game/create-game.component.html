@@ -31,8 +31,9 @@
                 </div>
             </div>
             <div id="submit" class="miniContainer">
-                <button id="cancelBtn" (click)="goBackToMain()">Cancel</button>
-                <button id="createBtn" (click)="createGame()">Create Game</button>
+                <button *ngIf="!creatingGame" id="cancelBtn" (click)="goBackToMain()">Cancel</button>
+                <button *ngIf="!creatingGame" id="createBtn" (click)="createGame()">Create Game</button>
+                <h2 *ngIf="creatingGame" id="status">{{ status }}</h2>
             </div>
         </div>
     </div>

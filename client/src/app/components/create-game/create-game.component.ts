@@ -14,7 +14,9 @@ import { GameService } from '../../services/game.service';
 export class CreateGameComponent implements OnInit, OnDestroy {
   private questions: Question[];
   private inputFields;
+  private creatingGame: boolean = false;
   private gameCreated: boolean = false;
+  private status: string;
   @Output() goBack = new EventEmitter<string>();
   @Output() hideHeader = new EventEmitter<string>();
 
@@ -97,8 +99,12 @@ export class CreateGameComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.creatingGame = true;
+    this.status = "Creating game...";
+
     this.gameService.createGame(this.questions)
       .then(game => {
+        this.status = "Game created!";
         this.gameService.setGamePin(game.pin);
         this.gameService.setGame(game);
         this.gameCreated = true;

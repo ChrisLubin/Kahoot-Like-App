@@ -277,3 +277,7 @@ select {
 #createBtn:hover, #createBtn:active {
     background: #3F9F31;
 }
+
+#status {
+    color: white;
+}
