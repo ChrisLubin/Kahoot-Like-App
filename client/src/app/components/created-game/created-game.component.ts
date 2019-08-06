@@ -24,6 +24,7 @@ export class CreatedGameComponent implements OnInit {
   private newPlayer: Subscription;
   private playerLeft: Subscription;
   private status: string = "Waiting for players to join...";
+  private statusTwo: string = "";
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
@@ -51,4 +52,10 @@ export class CreatedGameComponent implements OnInit {
       });
   }
 
+  private startGame():void {
+    this.gameStarted = true;
+    this.webSocketService
+      .emit('game start', this.pin);
+    this.status = `Players are answering question 1 out of ${this.game.questions.length}.`;
+  }
 }

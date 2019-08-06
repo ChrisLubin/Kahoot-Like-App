@@ -20,7 +20,8 @@
     </div>
     <!-- Status message/Start game button -->
     <div id="footer" class="rounded">
-        <button *ngIf="!gameStarted && playerList.length > 0" id="startBtn">Start Game</button>
+        <button *ngIf="!gameStarted && playerList.length > 0" id="startBtn" (click)="startGame()">Start Game</button>
         <h3 *ngIf="gameStarted || playerList.length === 0">{{ status }}</h3>
+        <h3 *ngIf="statusTwo">{{ statusTwo }}</h3>
     </div>
 </div>

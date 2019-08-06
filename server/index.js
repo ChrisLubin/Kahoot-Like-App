@@ -58,6 +58,12 @@ io.on('connection', socket => {
     });
   });
 
+  socket.on('game start', async gamePin => {
+    // Update 'gameStarted' property in DB
+    await Game.findOneAndUpdate({ pin: gamePin }, { gameStarted: true }, { useFindAndModify: false });
+    socket.to(gamePin).emit('game start');
+  });
+
   socket.on('disconnecting', async () => {
     const rooms = Object.keys(socket.rooms);
 

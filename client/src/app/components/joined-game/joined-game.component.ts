@@ -21,6 +21,7 @@ export class JoinedGameComponent implements OnInit {
   private status: string = "Getting other players...";
   private removeTextAnimation;
   private addTextAnimation;
+  private gameStart: Subscription;
   private newPlayer: Subscription;
   private playerLeft: Subscription;
 
@@ -45,6 +46,9 @@ export class JoinedGameComponent implements OnInit {
         pin: this.gamePin,
         username: this.username
       });
+    this.gameStart = this.webSocketService
+      .listen('game start')
+      .subscribe(() => this.gameStarted = true);
     this.newPlayer = this.webSocketService
       .listen('new player')
       .subscribe(player => this.playerList.push(player));
