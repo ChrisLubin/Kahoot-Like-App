@@ -5,6 +5,7 @@ import { GameService } from '../../services/game.service';
 import { WebSocketService } from '../../services/web-socket.service';
 import { Game } from '../../models/game.interface';
 import { Subscription } from 'rxjs';
+import { Player } from '../../models/player.interface';
 
 @Component({
   selector: 'app-created-game',
@@ -18,7 +19,8 @@ export class CreatedGameComponent implements OnInit {
   private game: Game;
   private gameStarted: boolean = false;
   private pin: number;
-  private playerList: string[] = [];
+  private playerList: Player[] = [];
+  private highestScore: number;
   private newPlayer: Subscription;
   private playerLeft: Subscription;
   private status: string = "Waiting for players to join...";
@@ -26,6 +28,7 @@ export class CreatedGameComponent implements OnInit {
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
   public ngOnInit():void {
+    // this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
     setTimeout(() => {
       this.show = true;
     }, animateTimer);
@@ -38,10 +41,13 @@ export class CreatedGameComponent implements OnInit {
           .emit("join room", { pin: this.pin });
         this.newPlayer = this.webSocketService
           .listen('new player')
-          .subscribe(player => this.playerList.push(player));
+          .subscribe(player => this.playerList.push({
+            username: player,
+            score: 0
+          }));
         this.playerLeft = this.webSocketService
           .listen('player left')
-          .subscribe(username => this.playerList = this.playerList.filter(player => player !== username));
+          .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
       });
   }
 

@@ -6,11 +6,14 @@
     </div>
     <!-- Player usernames in game -->
     <div id="players">
-        <h3 class="header">Players</h3>
+        <h3 class="header">Player Scoreboard</h3>
         <div id="playerList" class="rounded">
             <ul>
                 <li *ngFor="let player of playerList" class="player" [@fadeInOut]>
-                    {{ player }}
+                    <b>{{ player.username }}</b>
+                    <div id="scores">
+                        <span class="score" [style.width.%]="(player.score/highestScore * 100) - 2">{{ player.score }}</span>
+                    </div>
                 </li>
             </ul>
         </div>

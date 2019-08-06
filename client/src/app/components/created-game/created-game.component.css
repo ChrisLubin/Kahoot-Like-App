@@ -51,9 +51,9 @@
 
 ul {
     display: flex;
+    flex-direction: column;
     align-content: flex-start;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: flex-start;
     height: 90%;
     width: 90%;
     font-family: Georgia, Times, "Times New Roman", serif;
@@ -64,12 +64,27 @@ ul {
 }
 
 .player {
+    display: flex;
+    flex-direction: column;
+    width: 96%;
     height: fit-content;
-    width: fit-content;
     margin: 10px;
     font-family: inherit;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 500;
+}
+
+#scores {
+    width: 100%;
+}
+
+.score {
+    display: flex;
+    width: fit-content;
+    justify-content: center;
+    margin-top: 5px;
+    border: solid #3F9F31 1px;
+    background: #3F9F31;
 }
 
 button {
