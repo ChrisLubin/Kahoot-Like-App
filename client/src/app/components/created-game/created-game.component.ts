@@ -64,7 +64,17 @@ export class CreatedGameComponent implements OnInit {
       .emit('game start', this.pin);
     this.countdown = this.webSocketService
       .listen('time left')
-      .subscribe(time => this.game.timeLeft = time);
+      .subscribe(time => {
+        this.game.timeLeft = time;
+
+        if (time === 0) {
+          this.webSocketService
+            .emit('correct answer', {
+              pin: this.pin,
+              correctAnswer: this.currentQuestion.correctIndex
+            });
+        }
+      });
     this.playerAnswered = this.webSocketService
       .listen('answered question')
       .subscribe(data => {

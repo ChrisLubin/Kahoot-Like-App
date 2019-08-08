@@ -26,6 +26,7 @@ export class JoinedGameComponent implements OnInit {
   private playerLeft: Subscription;
   private countdown: Subscription;
   private playerAnswered: Subscription;
+  private correctAnswer: Subscription;
   private game: Game;
   private gamePin: string;
   private playerList: Player[] = [];
@@ -48,7 +49,7 @@ export class JoinedGameComponent implements OnInit {
     this.animateText = true;
     this.startStatusAnimation("Waiting for host to start game");
     this.playerList.push({
-      username: `${this.username} (You)`,
+      username: this.username,
       score: 0
     });
     await this.gameService.getUsers(this.gamePin)
@@ -95,6 +96,20 @@ export class JoinedGameComponent implements OnInit {
           }
         });
       });
+    this.correctAnswer = this.webSocketService
+      .listen('correct answer')
+      .subscribe(correctAnswer => {
+        this.playerList.forEach(player => {
+          if (player.answerIndex === correctAnswer) {
+            player.score++;
+            if (player.score > this.highestScore) {
+              this.highestScore = player.score;
+            }
+          }
+
+          player.answerIndex = null;
+        });
+      });
   }
 
   private startStatusAnimation(text: string):void {
@@ -122,6 +137,12 @@ export class JoinedGameComponent implements OnInit {
     this.status = "Waiting for other players to answer";
     this.animateText = true;
     this.startStatusAnimation("Waiting for other players to answer");
+    this.playerList.forEach(player => {
+      if (player.username === this.username) {
+        player.answerIndex = index;
+        return;
+      }
+    });
     this.webSocketService
       .emit('answered question', {
         pin: this.gamePin,

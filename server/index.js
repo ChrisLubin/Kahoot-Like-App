@@ -67,6 +67,11 @@ io.on('connection', socket => {
     new Timer(io, gamePin, 'time left', 30);
   });
 
+  socket.on('correct answer', data => {
+    const pin = data.pin;
+    socket.to(pin).emit('correct answer', data.correctAnswer);
+  });
+
   socket.on('answered question', data => {
     const pin = data.pin;
 
