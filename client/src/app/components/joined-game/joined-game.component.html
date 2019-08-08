@@ -3,6 +3,7 @@
     <div id="generalInfo" class="rounded">
         <h4 class="header">Game Pin {{ gamePin }}</h4>
         <h4 class="header">Player Count {{ playerList.length }}</h4>
+        <h4 *ngIf="gameStarted" class="header">Time Left {{ game.timeLeft }}</h4>
     </div>
     <!-- Player usernames in game -->
     <div *ngIf="!gameStarted" id="playerContainer">
@@ -18,7 +19,7 @@
     <div *ngIf="gameStarted" class="miniGrid">
         <div id="miniContainerOne">
             <h3 class="header">Question</h3>
-            <div id="question" class="center rounded">{{ currentQuestion }}</div>
+            <div id="question" class="center rounded">{{ currentQuestion.question }}</div>
         </div>
         <div id="miniContainerTwo">
             <h3 class="header">Scoreboard</h3>
@@ -37,17 +38,8 @@
     <!-- Answer choices -->
     <div *ngIf="gameStarted" id="answers" class="rounded">
         <div id="choices">
-            <div id="choice1" class="choice">
-                Choice 1
-            </div>
-            <div id="choice2" class="choice">
-                Choice 2
-            </div>
-            <div id="choice3" class="choice">
-                Choice 3
-            </div>
-            <div id="choice4" class="choice">
-                Choice 4
+            <div *ngFor="let choice of currentQuestion.choices" class="choice">
+                {{ choice }}
             </div>
         </div>
     </div>

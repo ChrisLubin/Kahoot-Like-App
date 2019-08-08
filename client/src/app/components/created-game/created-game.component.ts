@@ -23,6 +23,7 @@ export class CreatedGameComponent implements OnInit {
   private highestScore: number;
   private newPlayer: Subscription;
   private playerLeft: Subscription;
+  private countdown: Subscription;
   private status: string = "Waiting for players to join...";
   private statusTwo: string = "";
 
@@ -56,6 +57,9 @@ export class CreatedGameComponent implements OnInit {
     this.gameStarted = true;
     this.webSocketService
       .emit('game start', this.pin);
+    this.countdown = this.webSocketService
+      .listen('time left')
+      .subscribe(time => this.game.timeLeft = time);
     this.status = `Players are answering question 1 out of ${this.game.questions.length}.`;
   }
 }

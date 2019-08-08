@@ -5,6 +5,7 @@ import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { animateTimerPage } from '../../models/config';
 import { Game } from '../../models/game.interface';
 import { Player } from '../../models/player.interface';
+import { Question } from '../../models/question.interface';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,11 +24,12 @@ export class JoinedGameComponent implements OnInit {
   private gameStart: Subscription;
   private newPlayer: Subscription;
   private playerLeft: Subscription;
+  private countdown: Subscription;
   private game: Game;
   private gamePin: string;
   private playerList: Player[] = [];
   private gameStarted: boolean = false;
-  private currentQuestion: string;
+  private currentQuestion: Question;
   private highestScore: number = 0;
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
@@ -39,7 +41,8 @@ export class JoinedGameComponent implements OnInit {
     this.game = this.gameService.getGame();
     this.gamePin = this.gameService.getGamePin();
     this.username = this.gameService.getMyUsername();
-    this.currentQuestion = this.game.questions[0].question;
+    this.currentQuestion = this.game.questions[0];
+    this.startStatusAnimation();
     this.playerList.push({
       username: `${this.username} (You)`,
       score: 0
@@ -71,7 +74,9 @@ export class JoinedGameComponent implements OnInit {
     this.playerLeft = this.webSocketService
       .listen('player left')
       .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
-    this.startStatusAnimation();
+    this.countdown = this.webSocketService
+      .listen('time left')
+      .subscribe(time => this.game.timeLeft = time);
   }
 
   private startStatusAnimation():void {

@@ -4,5 +4,6 @@ export interface Game {
     gameStarted: boolean,
     currentQuestionIndex: number,
     pin: number,
-    questions: Question[]
+    questions: Question[],
+    timeLeft?: number
 }

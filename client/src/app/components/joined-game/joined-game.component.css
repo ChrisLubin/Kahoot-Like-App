@@ -185,39 +185,39 @@ ul {
     cursor: pointer;
 }
 
-#choice1 {
+.choice:nth-child(1) {
     background: #4CBAB6;
     border-top-left-radius: 15px;
 }
 
-#choice1:hover, #choice1:active {
+.choice:nth-child(1):hover, .choice:nth-child(1):active {
     background: #16B1AC;
 }
 
-#choice2 {
+.choice:nth-child(2) {
     background: #FC7F74;
     border-top-right-radius: 15px;
 }
 
-#choice2:hover, #choice2:active {
+.choice:nth-child(2):hover, .choice:nth-child(2):active {
     background: #F75C4E;
 }
 
-#choice3 {
+.choice:nth-child(3) {
     background: #EDD155;
     border-bottom-left-radius: 15px;
 }
 
-#choice3:hover, #choice3:active {
+.choice:nth-child(3):hover, .choice:nth-child(3):active {
     background: #EECC33;
 }
 
-#choice4 {
+.choice:nth-child(4) {
     background: #AC69B3;
     border-bottom-right-radius: 15px;
 }
 
-#choice4:hover, #choice4:active {
+.choice:nth-child(4):hover, .choice:nth-child(4):active {
     background: #A654AF;
 }
 

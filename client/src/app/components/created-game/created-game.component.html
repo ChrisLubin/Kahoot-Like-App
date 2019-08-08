@@ -3,6 +3,7 @@
     <div id="generalInfo" class="rounded">
         <h4 class="header">Game Pin {{ pin }}</h4>
         <h4 class="header">Player Count {{ playerList.length }}</h4>
+        <h4 *ngIf="gameStarted" class="header">Time Left {{ game.timeLeft }}</h4>
     </div>
     <!-- Player usernames in game -->
     <div id="players">
