@@ -10,7 +10,6 @@ class Timer {
 
       if (this.time <= 0) {
         clearInterval(this.timer);
-        return;
       }
     }, 1000);
   }

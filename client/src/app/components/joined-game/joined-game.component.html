@@ -36,13 +36,13 @@
         </div>
     </div>
     <!-- Answer choices -->
-    <div *ngIf="gameStarted" id="answers" class="rounded">
+    <div *ngIf="answeringQuestion" id="answers" class="rounded">
         <div id="choices">
-            <div *ngFor="let choice of currentQuestion.choices" class="choice">
+            <div *ngFor="let choice of currentQuestion.choices; let i = index" (click)="answerQuestion(i)" class="choice">
                 {{ choice }}
             </div>
         </div>
     </div>
     <!-- Status message -->
-    <h1 *ngIf="!gameStarted" id="status" class="header">{{ status }}</h1>
+    <h1 *ngIf="!answeringQuestion" id="status" class="header">{{ status }}</h1>
 </div>

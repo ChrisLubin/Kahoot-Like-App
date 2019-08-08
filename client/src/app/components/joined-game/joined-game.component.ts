@@ -25,10 +25,13 @@ export class JoinedGameComponent implements OnInit {
   private newPlayer: Subscription;
   private playerLeft: Subscription;
   private countdown: Subscription;
+  private playerAnswered: Subscription;
   private game: Game;
   private gamePin: string;
   private playerList: Player[] = [];
   private gameStarted: boolean = false;
+  private answeringQuestion: boolean = false;
+  private animateText: boolean;
   private currentQuestion: Question;
   private highestScore: number = 0;
 
@@ -42,7 +45,8 @@ export class JoinedGameComponent implements OnInit {
     this.gamePin = this.gameService.getGamePin();
     this.username = this.gameService.getMyUsername();
     this.currentQuestion = this.game.questions[0];
-    this.startStatusAnimation();
+    this.animateText = true;
+    this.startStatusAnimation("Waiting for host to start game");
     this.playerList.push({
       username: `${this.username} (You)`,
       score: 0
@@ -64,7 +68,11 @@ export class JoinedGameComponent implements OnInit {
       });
     this.gameStart = this.webSocketService
       .listen('game start')
-      .subscribe(() => this.gameStarted = true);
+      .subscribe(() => {
+        this.gameStarted = true;
+        this.answeringQuestion = true;
+        this.animateText = false;
+      });
     this.newPlayer = this.webSocketService
       .listen('new player')
       .subscribe(player => this.playerList.push({
@@ -77,9 +85,19 @@ export class JoinedGameComponent implements OnInit {
     this.countdown = this.webSocketService
       .listen('time left')
       .subscribe(time => this.game.timeLeft = time);
+    this.playerAnswered = this.webSocketService
+      .listen('answered question')
+      .subscribe(data => {
+        this.playerList.forEach(player => {
+          if (player.username === data.username) {
+            player.answerIndex = data.answerIndex;
+            return;
+          }
+        });
+      });
   }
 
-  private startStatusAnimation():void {
+  private startStatusAnimation(text: string):void {
       clearInterval(this.removeTextAnimation);
       this.addTextAnimation = setInterval(() => {
         this.status = this.status.concat('.'); // Add period to end
@@ -92,10 +110,23 @@ export class JoinedGameComponent implements OnInit {
       }, 450);
       setTimeout(() => {
         clearInterval(this.removeTextAnimation);
-        if (!this.gameStarted) { 
-          this.status = "Waiting for host to start game"; // Keeps animation in sync
-          this.startStatusAnimation(); // Keeps looping
+        if (this.animateText) { 
+          this.status = text; // Keeps animation in sync
+          this.startStatusAnimation(text); // Keeps looping
         }
       }, 900);
+  }
+
+  private answerQuestion(index: number):void {
+    this.answeringQuestion = false;
+    this.status = "Waiting for other players to answer";
+    this.animateText = true;
+    this.startStatusAnimation("Waiting for other players to answer");
+    this.webSocketService
+      .emit('answered question', {
+        pin: this.gamePin,
+        username: this.username,
+        answerIndex: index
+      });
   }
 }

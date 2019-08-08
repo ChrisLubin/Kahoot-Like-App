@@ -67,6 +67,15 @@ io.on('connection', socket => {
     new Timer(io, gamePin, 'time left', 30);
   });
 
+  socket.on('answered question', data => {
+    const pin = data.pin;
+
+    socket.to(pin).emit('answered question', {
+      username: data.username,
+      answerIndex: data.answerIndex
+    });
+  });
+
   socket.on('disconnecting', async () => {
     const rooms = Object.keys(socket.rooms);
 
