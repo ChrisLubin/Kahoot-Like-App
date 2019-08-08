@@ -27,6 +27,7 @@ export class JoinedGameComponent implements OnInit {
   private countdown: Subscription;
   private playerAnswered: Subscription;
   private correctAnswer: Subscription;
+  private allPlayersAnswered: Subscription;
   private game: Game;
   private gamePin: string;
   private playerList: Player[] = [];
@@ -85,7 +86,11 @@ export class JoinedGameComponent implements OnInit {
       .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
     this.countdown = this.webSocketService
       .listen('time left')
-      .subscribe(time => this.game.timeLeft = time);
+      .subscribe(time => {
+        this.game.timeLeft = time;
+
+        if (time === 0) { this.answeringQuestion = false }
+      });
     this.playerAnswered = this.webSocketService
       .listen('answered question')
       .subscribe(data => {
@@ -99,9 +104,30 @@ export class JoinedGameComponent implements OnInit {
     this.correctAnswer = this.webSocketService
       .listen('correct answer')
       .subscribe(correctAnswer => {
+        this.animateText = false;
+        this.status = "Loading next question";
         this.playerList.forEach(player => {
           if (player.answerIndex === correctAnswer) {
             player.score++;
+            this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
+            if (player.score > this.highestScore) {
+              this.highestScore = player.score;
+            }
+          }
+
+          player.answerIndex = null;
+        });
+      });
+    this.allPlayersAnswered = this.webSocketService
+      .listen('all players answered')
+      .subscribe(correctAnswer => {
+        this.animateText = false;
+        this.status = "Loading next question";
+        this.game.timeLeft = 0;
+        this.playerList.forEach(player => {
+          if (player.answerIndex === correctAnswer) {
+            player.score++;
+            this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
             if (player.score > this.highestScore) {
               this.highestScore = player.score;
             }

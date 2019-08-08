@@ -27,13 +27,13 @@ export class CreatedGameComponent implements OnInit {
   private playerLeft: Subscription;
   private countdown: Subscription;
   private playerAnswered: Subscription;
+  private playersAnswered: number = 0;
   private status: string = "Waiting for players to join...";
   private statusTwo: string = "";
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
   public ngOnInit():void {
-    // this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
     setTimeout(() => {
       this.show = true;
     }, animateTimer);
@@ -78,11 +78,24 @@ export class CreatedGameComponent implements OnInit {
     this.playerAnswered = this.webSocketService
       .listen('answered question')
       .subscribe(data => {
+        this.playersAnswered++;
+
+        if (this.playersAnswered === this.playerList.length) {
+          this.status = "All players answered.";
+          this.game.timeLeft = 0;
+          this.webSocketService
+            .emit('all players answered', {
+              pin: this.pin,
+              correctAnswer: this.currentQuestion.correctIndex
+            });
+        }
+
         if (data.answerIndex !== this.currentQuestion.correctIndex) { return }
 
         this.playerList.forEach(player => {
           if (player.username === data.username) {
             player.score++;
+            this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
             if (player.score > this.highestScore) { this.highestScore = player.score }
             return;
           }

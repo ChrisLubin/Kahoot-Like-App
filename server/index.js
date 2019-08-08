@@ -9,6 +9,7 @@ const connectDB = require('./db');
 const Game = require('./models/game');
 const User = require('./models/user');
 const Timer = require('./models/timer');
+const gameTimers = {};
 
 server.listen(PORT, () => console.log('Server started...'));
 connectDB();
@@ -64,7 +65,7 @@ io.on('connection', socket => {
     await Game.findOneAndUpdate({ pin: gamePin }, { gameStarted: true }, { useFindAndModify: false });
     socket.to(gamePin).emit('game start');
 
-    new Timer(io, gamePin, 'time left', 30);
+    gameTimers[gamePin] = new Timer(io, gamePin, 'time left', 30);
   });
 
   socket.on('correct answer', data => {
@@ -79,6 +80,12 @@ io.on('connection', socket => {
       username: data.username,
       answerIndex: data.answerIndex
     });
+  });
+
+  socket.on('all players answered', data => {
+    const pin = data.pin;
+    gameTimers[pin].stop();
+    socket.to(pin).emit('all players answered', data.correctAnswer);
   });
 
   socket.on('disconnecting', async () => {
