@@ -88,6 +88,18 @@ io.on('connection', socket => {
     socket.to(pin).emit('all players answered', data.correctAnswer);
   });
 
+  socket.on('next question', pin => {
+    // Give players time between questions
+    setTimeout(() => {
+      socket.to(pin).emit('next question');
+      gameTimers[pin].start(io, 30);
+    }, 4000);
+  });
+
+  socket.on('game over', pin => {
+    socket.to(pin).emit('game over');
+  });
+
   socket.on('disconnecting', async () => {
     const rooms = Object.keys(socket.rooms);
 

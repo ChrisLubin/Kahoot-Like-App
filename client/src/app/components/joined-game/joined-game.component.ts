@@ -28,6 +28,8 @@ export class JoinedGameComponent implements OnInit {
   private playerAnswered: Subscription;
   private correctAnswer: Subscription;
   private allPlayersAnswered: Subscription;
+  private nextQuestion: Subscription;
+  private gameOver: Subscription;
   private game: Game;
   private gamePin: string;
   private playerList: Player[] = [];
@@ -135,6 +137,21 @@ export class JoinedGameComponent implements OnInit {
 
           player.answerIndex = null;
         });
+      });
+    this.nextQuestion = this.webSocketService
+      .listen('next question')
+      .subscribe(() => {
+        this.animateText = false;
+        this.game.currentQuestionIndex++;
+        this.currentQuestion = this.game.questions[this.game.currentQuestionIndex];
+        this.answeringQuestion = true;
+      });
+    this.gameOver = this.webSocketService
+      .listen('game over')
+      .subscribe(() => {
+        this.animateText = false;
+        this.status = "Game over!";
+        this.answeringQuestion = false;
       });
   }
 

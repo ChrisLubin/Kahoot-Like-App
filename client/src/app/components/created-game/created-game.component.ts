@@ -29,7 +29,6 @@ export class CreatedGameComponent implements OnInit {
   private playerAnswered: Subscription;
   private playersAnswered: number = 0;
   private status: string = "Waiting for players to join...";
-  private statusTwo: string = "";
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
@@ -59,7 +58,7 @@ export class CreatedGameComponent implements OnInit {
 
   private startGame():void {
     this.gameStarted = true;
-    this.status = `Players are answering question 1 out of ${this.game.questions.length}.`;
+    this.status = `Players are answering question ${this.game.currentQuestionIndex + 1} out of ${this.game.questions.length}.`;
     this.webSocketService
       .emit('game start', this.pin);
     this.countdown = this.webSocketService
@@ -73,12 +72,27 @@ export class CreatedGameComponent implements OnInit {
               pin: this.pin,
               correctAnswer: this.currentQuestion.correctIndex
             });
+          this.playersAnswered = 0; // Reset players answered
+          this.nextQuestion();
         }
       });
     this.playerAnswered = this.webSocketService
       .listen('answered question')
       .subscribe(data => {
         this.playersAnswered++;
+
+        if (data.answerIndex === this.currentQuestion.correctIndex) {
+          this.playerList.forEach(player => {
+            if (player.username === data.username) {
+              player.score++;
+              this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
+              if (player.score > this.highestScore) {
+                this.highestScore = player.score;
+              }
+              return;
+            }
+          });
+        }
 
         if (this.playersAnswered === this.playerList.length) {
           this.status = "All players answered.";
@@ -88,18 +102,26 @@ export class CreatedGameComponent implements OnInit {
               pin: this.pin,
               correctAnswer: this.currentQuestion.correctIndex
             });
+          this.playersAnswered = 0; // Reset players answered
+          this.nextQuestion();
         }
-
-        if (data.answerIndex !== this.currentQuestion.correctIndex) { return }
-
-        this.playerList.forEach(player => {
-          if (player.username === data.username) {
-            player.score++;
-            this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
-            if (player.score > this.highestScore) { this.highestScore = player.score }
-            return;
-          }
-        });
       });
+  }
+
+  private nextQuestion():void {
+    this.game.currentQuestionIndex++;
+
+    if (this.game.currentQuestionIndex === this.game.questions.length) {
+      // Game over
+      this.status = "Game over!";
+      this.webSocketService
+        .emit('game over', this.pin);
+      return;
+    }
+
+    this.currentQuestion = this.game.questions[this.game.currentQuestionIndex];
+    this.webSocketService
+      .emit('next question', this.pin);
+      this.status = `Players are answering question ${this.game.currentQuestionIndex + 1} out of ${this.game.questions.length}.`;
   }
 }
