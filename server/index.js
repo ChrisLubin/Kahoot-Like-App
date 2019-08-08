@@ -8,6 +8,7 @@ const clientURL = config.get('clientRootURL');
 const connectDB = require('./db');
 const Game = require('./models/game');
 const User = require('./models/user');
+const Timer = require('./models/timer');
 
 server.listen(PORT, () => console.log('Server started...'));
 connectDB();
@@ -62,6 +63,8 @@ io.on('connection', socket => {
     // Update 'gameStarted' property in DB
     await Game.findOneAndUpdate({ pin: gamePin }, { gameStarted: true }, { useFindAndModify: false });
     socket.to(gamePin).emit('game start');
+
+    new Timer(io, gamePin, 'time left', 30);
   });
 
   socket.on('disconnecting', async () => {
