@@ -85,7 +85,11 @@ export class JoinedGameComponent implements OnInit {
       }));
     this.playerLeft = this.webSocketService
       .listen('player left')
-      .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
+      .subscribe(username => {
+        if (!this.gameStarted) {
+          this.playerList = this.playerList.filter(player => player.username !== username);
+        }
+      });
     this.countdown = this.webSocketService
       .listen('time left')
       .subscribe(time => {

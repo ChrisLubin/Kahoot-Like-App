@@ -27,7 +27,8 @@ export class CreatedGameComponent implements OnInit {
   private playerLeft: Subscription;
   private countdown: Subscription;
   private playerAnswered: Subscription;
-  private playersAnswered: number = 0;
+  private nextQuestion: Subscription;
+  private gameOver: Subscription;
   private status: string = "Waiting for players to join...";
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
@@ -43,7 +44,7 @@ export class CreatedGameComponent implements OnInit {
       .connect(true)
       .then(() => {
         this.webSocketService
-          .emit("join room", { pin: this.pin });
+          .emit("join room", this.game);
         this.newPlayer = this.webSocketService
           .listen('new player')
           .subscribe(player => this.playerList.push({
@@ -52,7 +53,11 @@ export class CreatedGameComponent implements OnInit {
           }));
         this.playerLeft = this.webSocketService
           .listen('player left')
-          .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
+          .subscribe(username => {
+            if (!this.gameStarted) {
+              this.playerList = this.playerList.filter(player => player.username !== username);
+            }
+          });
       });
   }
 
@@ -63,24 +68,10 @@ export class CreatedGameComponent implements OnInit {
       .emit('game start', this.pin);
     this.countdown = this.webSocketService
       .listen('time left')
-      .subscribe(time => {
-        this.game.timeLeft = time;
-
-        if (time === 0) {
-          this.webSocketService
-            .emit('correct answer', {
-              pin: this.pin,
-              correctAnswer: this.currentQuestion.correctIndex
-            });
-          this.playersAnswered = 0; // Reset players answered
-          this.nextQuestion();
-        }
-      });
+      .subscribe(time => this.game.timeLeft = time);
     this.playerAnswered = this.webSocketService
       .listen('answered question')
       .subscribe(data => {
-        this.playersAnswered++;
-
         if (data.answerIndex === this.currentQuestion.correctIndex) {
           this.playerList.forEach(player => {
             if (player.username === data.username) {
@@ -93,35 +84,16 @@ export class CreatedGameComponent implements OnInit {
             }
           });
         }
-
-        if (this.playersAnswered === this.playerList.length) {
-          this.status = "All players answered.";
-          this.game.timeLeft = 0;
-          this.webSocketService
-            .emit('all players answered', {
-              pin: this.pin,
-              correctAnswer: this.currentQuestion.correctIndex
-            });
-          this.playersAnswered = 0; // Reset players answered
-          this.nextQuestion();
-        }
       });
-  }
-
-  private nextQuestion():void {
-    this.game.currentQuestionIndex++;
-
-    if (this.game.currentQuestionIndex === this.game.questions.length) {
-      // Game over
-      this.status = "Game over!";
-      this.webSocketService
-        .emit('game over', this.pin);
-      return;
-    }
-
-    this.currentQuestion = this.game.questions[this.game.currentQuestionIndex];
-    this.webSocketService
-      .emit('next question', this.pin);
-      this.status = `Players are answering question ${this.game.currentQuestionIndex + 1} out of ${this.game.questions.length}.`;
+    this.nextQuestion = this.webSocketService
+      .listen('next question')
+      .subscribe(() => {
+        this.game.currentQuestionIndex++;
+        this.currentQuestion = this.game.questions[this.game.currentQuestionIndex];
+        this.status = `Players are answering question ${this.game.currentQuestionIndex + 1} out of ${this.game.questions.length}.`;
+      });
+    this.gameOver = this.webSocketService
+      .listen('game over')
+      .subscribe(() => this.status = "Game over!");
   }
 }

@@ -8,8 +8,8 @@ const clientURL = config.get('clientRootURL');
 const connectDB = require('./db');
 const Game = require('./models/game');
 const User = require('./models/user');
-const Timer = require('./models/timer');
-const gameTimers = {};
+const GameKeeper = require('./models/gameKeeper');
+const games = {}; // Active games
 
 server.listen(PORT, () => console.log('Server started...'));
 connectDB();
@@ -47,8 +47,13 @@ app.use((req, res) => {
 io.on('connection', socket => {
   socket.on('join room', data => {
     socket.join(data.pin, () => {
-      if (!data.username) { return } // Host just wants to listen for players joining
+      if (!data.username) {
+        // Host created game
+        games[data.pin] = new GameKeeper(io, data);
+        return;
+      }
 
+      games[data.pin].playerJoined();
       const username = data.username.trim().replace(/\s+/g,' '); // Remove excess spaces
       const user = new User({
         id: socket.id,
@@ -60,44 +65,18 @@ io.on('connection', socket => {
     });
   });
 
+  // Host starts game
   socket.on('game start', async gamePin => {
+    const pin = gamePin;
+    
     // Update 'gameStarted' property in DB
-    await Game.findOneAndUpdate({ pin: gamePin }, { gameStarted: true }, { useFindAndModify: false });
-    socket.to(gamePin).emit('game start');
-
-    gameTimers[gamePin] = new Timer(io, gamePin, 'time left', 30);
-  });
-
-  socket.on('correct answer', data => {
-    const pin = data.pin;
-    socket.to(pin).emit('correct answer', data.correctAnswer);
+    await Game.findOneAndUpdate({ pin: pin }, { gameStarted: true }, { useFindAndModify: false });
+    games[pin].startGame(socket);
   });
 
   socket.on('answered question', data => {
     const pin = data.pin;
-
-    socket.to(pin).emit('answered question', {
-      username: data.username,
-      answerIndex: data.answerIndex
-    });
-  });
-
-  socket.on('all players answered', data => {
-    const pin = data.pin;
-    gameTimers[pin].stop();
-    socket.to(pin).emit('all players answered', data.correctAnswer);
-  });
-
-  socket.on('next question', pin => {
-    // Give players time between questions
-    setTimeout(() => {
-      socket.to(pin).emit('next question');
-      gameTimers[pin].start(io, 30);
-    }, 4000);
-  });
-
-  socket.on('game over', pin => {
-    socket.to(pin).emit('game over');
+    games[pin].questionAnswered(socket, data);
   });
 
   socket.on('disconnecting', async () => {
@@ -111,6 +90,7 @@ io.on('connection', socket => {
     if (!result) { return } // Host disconnected
 
     const username = result.username;
+    games[pin].playerLeft();
     socket.to(pin).emit('player left', username);
     await User.deleteOne({ id: socket.id }); // Doesn't work without await for some reason
   });
