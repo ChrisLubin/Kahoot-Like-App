@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
 import { animateTimer } from '../../models/config';
 import { GameService } from '../../services/game.service';
@@ -15,7 +15,7 @@ import { Player } from '../../models/player.interface';
   animations: [fadeInOut]
 })
 
-export class CreatedGameComponent implements OnInit {
+export class CreatedGameComponent implements OnInit, OnDestroy {
   private show: boolean = false;
   private game: Game;
   private gameStarted: boolean = false;
@@ -23,6 +23,7 @@ export class CreatedGameComponent implements OnInit {
   private playerList: Player[] = [];
   private currentQuestion: Question;
   private highestScore: number = 0;
+  private subscriptions: Subscription[] = [];
   private newPlayer: Subscription;
   private playerLeft: Subscription;
   private countdown: Subscription;
@@ -53,15 +54,22 @@ export class CreatedGameComponent implements OnInit {
           }));
         this.playerLeft = this.webSocketService
           .listen('player left')
-          .subscribe(username => {
-            if (!this.gameStarted) {
-              this.playerList = this.playerList.filter(player => player.username !== username);
-            }
-          });
+          .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
+
+        // Add subscriptions to array
+        this.subscriptions.push(this.newPlayer);
+        this.subscriptions.push(this.playerLeft);
       });
   }
 
+  ngOnDestroy():void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions = [];
+  }
+
   private startGame():void {
+    this.removeSubscription(this.newPlayer);
+    this.removeSubscription(this.playerLeft);
     this.gameStarted = true;
     this.status = `Players are answering question ${this.game.currentQuestionIndex + 1} out of ${this.game.questions.length}.`;
     this.webSocketService
@@ -94,6 +102,21 @@ export class CreatedGameComponent implements OnInit {
       });
     this.gameOver = this.webSocketService
       .listen('game over')
-      .subscribe(() => this.status = "Game over!");
+      .subscribe(() => {
+        this.subscriptions.forEach(subscription => subscription.unsubscribe()); // Unsubscribe from all subscriptions
+        this.subscriptions = [];
+        this.status = "Game over!";
+      });
+
+    // Add subscriptions to array
+    this.subscriptions.push(this.countdown);
+    this.subscriptions.push(this.playerAnswered);
+    this.subscriptions.push(this.nextQuestion);
+    this.subscriptions.push(this.gameOver);
+  }
+
+  private removeSubscription(subscription: Subscription):void {
+    subscription.unsubscribe();
+    this.subscriptions = this.subscriptions.filter(sub => sub !== subscription); // Remove subscription from array
   }
 }

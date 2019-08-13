@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GameService } from '../../services/game.service';
 import { WebSocketService } from '../../services/web-socket.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
@@ -15,12 +15,13 @@ import { Subscription } from 'rxjs';
   animations: [fadeInOut]
 })
 
-export class JoinedGameComponent implements OnInit {
+export class JoinedGameComponent implements OnInit, OnDestroy {
   private show: boolean;
   private username: string;
   private status: string = "Getting other players...";
   private removeTextAnimation;
   private addTextAnimation;
+  private subscriptions: Subscription[] = [];
   private gameStart: Subscription;
   private newPlayer: Subscription;
   private playerLeft: Subscription;
@@ -73,6 +74,9 @@ export class JoinedGameComponent implements OnInit {
     this.gameStart = this.webSocketService
       .listen('game start')
       .subscribe(() => {
+        this.removeSubscription(this.gameStart);
+        this.removeSubscription(this.newPlayer);
+        this.removeSubscription(this.playerLeft);
         this.gameStarted = true;
         this.answeringQuestion = true;
         this.animateText = false;
@@ -85,11 +89,7 @@ export class JoinedGameComponent implements OnInit {
       }));
     this.playerLeft = this.webSocketService
       .listen('player left')
-      .subscribe(username => {
-        if (!this.gameStarted) {
-          this.playerList = this.playerList.filter(player => player.username !== username);
-        }
-      });
+      .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
     this.countdown = this.webSocketService
       .listen('time left')
       .subscribe(time => {
@@ -153,10 +153,29 @@ export class JoinedGameComponent implements OnInit {
     this.gameOver = this.webSocketService
       .listen('game over')
       .subscribe(() => {
+        this.subscriptions.forEach(subscription => subscription.unsubscribe()); // Unsubscribe from all subscriptions
+        this.subscriptions = [];
         this.animateText = false;
         this.status = "Game over!";
         this.answeringQuestion = false;
       });
+
+    // Add all subscriptions to array
+    this.subscriptions.push(this.gameStart);
+    this.subscriptions.push(this.newPlayer);
+    this.subscriptions.push(this.playerLeft);
+    this.subscriptions.push(this.countdown);
+    this.subscriptions.push(this.playerAnswered);
+    this.subscriptions.push(this.correctAnswer);
+    this.subscriptions.push(this.allPlayersAnswered);
+    this.subscriptions.push(this.nextQuestion);
+    this.subscriptions.push(this.gameOver);
+  }
+
+  ngOnDestroy():void {
+    // Unsubscribe from all subscriptions
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions = [];
   }
 
   private startStatusAnimation(text: string):void {
@@ -196,5 +215,10 @@ export class JoinedGameComponent implements OnInit {
         username: this.username,
         answerIndex: index
       });
+  }
+
+  private removeSubscription(subscription: Subscription):void {
+    subscription.unsubscribe();
+    this.subscriptions = this.subscriptions.filter(sub => sub !== subscription); // Remove subscription from array
   }
 }
