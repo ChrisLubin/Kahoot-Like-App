@@ -19,6 +19,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
   private show: boolean = false;
   private game: Game;
   private gameStarted: boolean = false;
+  private gameFinished: boolean = false;
   private pin: number;
   private playerList: Player[] = [];
   private currentQuestion: Question;
@@ -106,6 +107,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
         this.subscriptions.forEach(subscription => subscription.unsubscribe()); // Unsubscribe from all subscriptions
         this.subscriptions = [];
         this.status = "Game over!";
+        this.gameFinished = true;
       });
 
     // Add subscriptions to array
