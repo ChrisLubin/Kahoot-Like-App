@@ -4,6 +4,7 @@
         <h4 class="header">Game Pin {{ gamePin }}</h4>
         <h4 class="header">Player Count {{ playerList.length }}</h4>
         <h4 *ngIf="gameStarted" class="header">Time Left {{ game.timeLeft }}</h4>
+        <h4 *ngIf="gameStarted" class="header">{{ placement }}</h4>
     </div>
     <!-- Player usernames in game -->
     <div *ngIf="!gameStarted" id="playerContainer">

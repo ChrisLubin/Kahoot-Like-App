@@ -19,6 +19,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
   private show: boolean;
   private username: string;
   private status: string = "Getting other players...";
+  private placement: string = "You're tied for 1st place";
   private removeTextAnimation;
   private addTextAnimation;
   private subscriptions: Subscription[] = [];
@@ -109,39 +110,10 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
       });
     this.correctAnswer = this.webSocketService
       .listen('correct answer')
-      .subscribe(correctAnswer => {
-        this.animateText = false;
-        this.status = "Loading next question";
-        this.playerList.forEach(player => {
-          if (player.answerIndex === correctAnswer) {
-            player.score++;
-            this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
-            if (player.score > this.highestScore) {
-              this.highestScore = player.score;
-            }
-          }
-
-          player.answerIndex = null;
-        });
-      });
+      .subscribe(correctAnswer => this.updateScoreboard(correctAnswer));
     this.allPlayersAnswered = this.webSocketService
       .listen('all players answered')
-      .subscribe(correctAnswer => {
-        this.animateText = false;
-        this.status = "Loading next question";
-        this.game.timeLeft = 0;
-        this.playerList.forEach(player => {
-          if (player.answerIndex === correctAnswer) {
-            player.score++;
-            this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
-            if (player.score > this.highestScore) {
-              this.highestScore = player.score;
-            }
-          }
-
-          player.answerIndex = null;
-        });
-      });
+      .subscribe(correctAnswer => this.updateScoreboard(correctAnswer));
     this.nextQuestion = this.webSocketService
       .listen('next question')
       .subscribe(() => {
@@ -157,6 +129,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
         this.subscriptions = [];
         this.animateText = false;
         this.status = "Game over!";
+        this.updatePlacement(true);
         this.answeringQuestion = false;
       });
 
@@ -215,6 +188,71 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
         username: this.username,
         answerIndex: index
       });
+  }
+
+  private updateScoreboard(correctAnswer: number):void {
+    this.animateText = false;
+    this.status = "Loading next question";
+    this.game.timeLeft = 0;
+    this.playerList.forEach(player => {
+      if (player.answerIndex === correctAnswer) {
+        player.score++;
+        this.playerList.sort((first, second) => second.score - first.score); // Sort scoreboard
+        this.updatePlacement(false);
+        if (player.score > this.highestScore) {
+          this.highestScore = player.score;
+        }
+      }
+
+      player.answerIndex = null;
+    });
+  }
+
+  private updatePlacement(gameOver: boolean):void {
+    const currentScores = [];
+    let myScore;
+    let tied = false; // Boolean for if user is tied for a placement
+    let placement = 1;
+    let abbreviation; // Abbreviation for placement
+
+    this.playerList.forEach(player => {
+      // Get my score
+      if (player.username === this.username) {
+        myScore = player.score;
+        return;
+      }
+    });
+    this.playerList.forEach(player => {
+      // Calculate current placement
+      if (player.score > myScore && !currentScores.includes(player.score)) {
+        currentScores.push(player.score);
+        placement++;
+      } else if (player.score === myScore && player.username !== this.username) {
+        tied = true;
+        return;
+      } else {
+        return;
+      }
+    });
+
+    // Determine abbreviation of placement
+    const lastNum = parseInt(placement.toString().split('').pop());
+
+    if (lastNum === 1) {
+      abbreviation = "st";
+    } else if (lastNum === 2) {
+      abbreviation = "nd";
+    } else if (lastNum === 3) {
+      abbreviation = "rd";
+    } else {
+      abbreviation = "th";
+    }
+
+    if (!gameOver) {
+      this.placement = `You're ${tied ? 'tied for' : 'in'} ${placement}${abbreviation} place`;
+    } else {
+      this.placement = `You ${tied ? 'tied for' : 'got'} ${placement}${abbreviation} place!`;
+    }
   }
 
   private removeSubscription(subscription: Subscription):void {
