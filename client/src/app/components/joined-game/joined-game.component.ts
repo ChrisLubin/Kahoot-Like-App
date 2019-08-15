@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GameService } from '../../services/game.service';
 import { WebSocketService } from '../../services/web-socket.service';
 import { fadeInOut } from '../../animations/fadeInOut.animation';
-import { animateTimerPage } from '../../models/config';
+import { animateTimer, animateTimerPage, displayStatusTimer } from '../../models/config';
 import { Game } from '../../models/game.interface';
 import { Player } from '../../models/player.interface';
 import { Question } from '../../models/question.interface';
@@ -43,23 +43,23 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
-  public async ngOnInit() {
+  public ngOnInit() {
     setTimeout(() => {
       this.show = true;
-    }, animateTimerPage);
+    }, (4 * animateTimer) + displayStatusTimer + animateTimerPage);
     this.game = this.gameService.getGame();
     this.gamePin = this.gameService.getGamePin();
     this.username = this.gameService.getMyUsername();
     this.currentQuestion = this.game.questions[0];
     this.animateText = true;
-    this.startStatusAnimation("Waiting for host to start game");
     this.playerList.push({
       username: this.username,
       score: 0
     });
-    await this.gameService.getUsers(this.gamePin)
+    this.gameService.getUsers(this.gamePin)
       .then(users => {
         this.status = "Waiting for host to start game";
+        this.startStatusAnimation("Waiting for host to start game");
         users.forEach(user => {
           this.playerList.push({
             username: user.username,

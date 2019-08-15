@@ -30,6 +30,7 @@ export class JoinGameComponent implements OnInit {
   private foundStatus;
   private swapPage: boolean;
   private connect: Subscription;
+  private connected: boolean = false;
   @Output() goBack = new EventEmitter<string>();
   @Output() hideHeader = new EventEmitter<string>();
 
@@ -205,6 +206,11 @@ export class JoinGameComponent implements OnInit {
   }
 
   private updateStatusMessage(message:string, status:string):void {
+    if (status === "connected") {
+      // Connect user to WebSocket right away so duplicate names are not possible
+      this.connected = true;
+    }
+
     // Delays so transitions are smooth in and out of join status messages
     setTimeout(() => {
       // Swap which status message element gets shown for smooth transitions
