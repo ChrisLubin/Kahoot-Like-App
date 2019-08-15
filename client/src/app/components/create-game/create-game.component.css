@@ -1,11 +1,14 @@
 @import "../../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 
+/* Height responsiveness */
 @media only screen and (max-height: 662px) {
     .question {
         padding: 2.5px 2.5% !important;
     }
 
     #enterQuestion {
+        width: 85% !important;
+        margin-top: 10px !important;
         font-size: 12px !important;
         padding: 10px !important;
     }
@@ -15,12 +18,17 @@
         padding: 7px !important;
     }
 
+    select {
+        padding: 7px !important;
+    }
+
     #addQuestionBtn {
         font-size: 12px !important;
+        padding: 7px !important;
     }
 
     #cancelBtn, #createBtn {
-        font-size: 15px !important;
+        font-size: 12px !important;
     }
 }
 
@@ -30,12 +38,35 @@
     }
 
     #enterQuestion {
-        font-size: 15px !important;
+        font-size: 13px !important;
     }
 
     .choice {
         font-size: 11px !important;
         padding: 8px !important;
+    }
+
+    select {
+        font-size: 12px !important;
+    }
+
+    #addQuestionBtn {
+        font-size: 12px !important;
+    }
+}
+
+/* Width responsiveness */
+@media only screen and (max-width: 383px) {
+    #enterQuestion {
+        font-size: 18px !important;
+    }
+
+    .choice {
+        font-size: 12px !important;
+    }
+
+    select {
+        font-size: 15px !important;
     }
 
     #addQuestionBtn {
@@ -45,7 +76,8 @@
 
 #header {
     display: flex;
-    margin-bottom: 50px;
+    height: calc(33vh - 33px);
+    align-items: center;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
     color: white;
@@ -60,7 +92,7 @@
     width: 90%;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    padding: 5% 5% 2.5%;
+    padding: 22px 22px 11px;
     background: white;
 }
 
@@ -69,6 +101,7 @@
     height: 100%;
     width: 100%;
     align-items: flex-end;
+    overflow: hidden;
 }
 
 .miniContainer {
@@ -191,19 +224,19 @@ button {
     font-size: 15px;
 }
 
-#choice1 {
+.choice:nth-child(1) {
     grid-area: choice1;
 }
 
-#choice2 {
+.choice:nth-child(2) {
     grid-area: choice2;
 }
 
-#choice3 {
+.choice:nth-child(3) {
     grid-area: choice3;
 }
 
-#choice4 {
+.choice:nth-child(4) {
     grid-area: choice4;
 }
 
