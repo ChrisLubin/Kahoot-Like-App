@@ -49,7 +49,7 @@ io.on('connection', socket => {
     socket.join(data.pin, () => {
       if (!data.username) {
         // Host created game
-        games[data.pin] = new GameKeeper(io, data);
+        games[data.pin] = new GameKeeper(io, data, games);
         return;
       }
 
@@ -71,7 +71,7 @@ io.on('connection', socket => {
     
     // Update 'gameStarted' property in DB
     await Game.findOneAndUpdate({ pin: pin }, { gameStarted: true }, { useFindAndModify: false });
-    games[pin].startGame(socket);
+    games[pin].startGame();
   });
 
   socket.on('answered question', data => {
@@ -85,13 +85,40 @@ io.on('connection', socket => {
     if (rooms.length === 1) { return } // Do nothing because this is the first test connect socket from client
 
     const pin = rooms[0];
-    const result = await User.findOne({ id: socket.id }).select('username');
+    let result = await User.findOne({ id: socket.id }).select('username');
 
-    if (!result) { return } // Host disconnected
+    if (!result) {
+      // Host disconnected
+      try {
+        games[pin].hostLeft();
+      } catch(err) {
+        // GameKeeper object no longer exists because all players left
+        return;
+      }
+
+      result = await Game.findOne({ pin: pin }).select('gameStarted');
+      const gameStarted = result.gameStarted;
+
+      if (gameStarted) {
+        // Do nothing because game already started
+        return;
+      }
+      
+      // Game was not started
+      await Game.deleteOne({ pin: pin });
+
+      // Let players know that host left & make all players leave room
+      return;
+    }
+
+    try {
+      games[pin].playerLeft();
+    } catch (err) {
+      // GameKeeper object on longer exists because game ended
+    }
 
     const username = result.username;
-    games[pin].playerLeft();
     socket.to(pin).emit('player left', username);
-    await User.deleteOne({ id: socket.id }); // Doesn't work without await for some reason
+    await User.deleteOne({ id: socket.id });
   });
 });

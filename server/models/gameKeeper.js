@@ -1,7 +1,12 @@
+const Game = require('../models/game');
+const User = require('../models/user');
+
 class GameKeeper {
-  constructor(io, game) {
+  constructor(io, game, games) {
     this.io = io;
+    this.games = games;
     this.game = game;
+    this.game.hostLeft = false;
     this.pin =  game.pin;
     this.currentQuestion = this.game.questions[0];
     this.currentQuestionIndex = 0;
@@ -9,16 +14,32 @@ class GameKeeper {
     this.playersAnswered = 0;
   }
 
+  hostLeft() {
+    this.game.hostLeft = true;
+  }
+
   playerJoined() {
     this.playerCount++;
   }
 
-  playerLeft() {
+  async playerLeft() {
     this.playerCount--;
+    if (this.playerCount === 0 && (this.game.gameStarted || this.game.hostLeft)) {
+      if (this.game.gameStarted) {
+        // Let host know that all players left
+        console.log('Everyone except the host left'); 
+      }
+
+      this.stopTimer();
+      await Game.deleteOne({ pin: this.pin });
+      await User.deleteMany({ pin: this.pin });
+      delete this.games[this.pin];
+    }
   }
 
-  startGame(socket) {
-    socket.to(this.pin).emit('game start');
+  startGame() {
+    this.game.gameStarted = true;
+    this.io.in(this.pin).emit('game start');
     this.startTimer(30);
   }
 
@@ -61,12 +82,14 @@ class GameKeeper {
     }
   }
 
-  nextQuestion() {
+  async nextQuestion() {
     this.currentQuestionIndex++;
 
     if (this.currentQuestionIndex === this.game.questions.length) {
       // All questions have been asked
       this.io.in(this.pin).emit('game over');
+      await Game.deleteOne({ pin: this.pin });
+      delete this.games[this.pin];
       return;
     }
     this.currentQuestion = this.game.questions[this.currentQuestionIndex];
