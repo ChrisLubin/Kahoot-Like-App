@@ -7,7 +7,7 @@ class GameKeeper {
     this.games = games;
     this.game = game;
     this.game.hostLeft = false;
-    this.pin =  game.pin;
+    this.pin = game.pin;
     this.currentQuestion = this.game.questions[0];
     this.currentQuestionIndex = 0;
     this.playerCount = 0;
@@ -27,7 +27,7 @@ class GameKeeper {
     if (this.playerCount === 0 && (this.game.gameStarted || this.game.hostLeft)) {
       if (this.game.gameStarted) {
         // Let host know that all players left
-        console.log('Everyone except the host left'); 
+        this.io.in(this.pin).emit('all players left');
       }
 
       this.stopTimer();

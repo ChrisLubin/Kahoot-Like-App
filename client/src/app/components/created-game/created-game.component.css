@@ -106,10 +106,6 @@ button {
     justify-content: center;
 }
 
-#status {
-    text-align: center;
-}
-
 #startBtn {
     font-size: 20px;
     color: white;
@@ -119,5 +115,35 @@ button {
 }
 
 #startBtn:hover, #startBtn:active {
+    background: #3F9F31;
+}
+
+#status {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#status > h3 {
+    margin: 0;
+}
+
+#mainMenuBtn {
+    height: fit-content;
+    width: fit-content;
+    cursor: pointer;
+    border-radius: 15px;
+    padding: 7px;
+    background: #64BF6A;
+    font-family: inherit;
+    font-size: 18px;
+    color: white;
+    border: solid white 3px;
+    text-decoration: none;
+}
+
+#mainMenuBtn:hover, #mainMenuBtn:active {
     background: #3F9F31;
 }

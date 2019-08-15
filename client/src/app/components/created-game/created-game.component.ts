@@ -27,6 +27,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private newPlayer: Subscription;
   private playerLeft: Subscription;
+  private allPlayersLeft: Subscription;
   private countdown: Subscription;
   private playerAnswered: Subscription;
   private nextQuestion: Subscription;
@@ -75,6 +76,17 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
     this.status = `Players are answering question ${this.game.currentQuestionIndex + 1} out of ${this.game.questions.length}.`;
     this.webSocketService
       .emit('game start', this.pin);
+    this.allPlayersLeft = this.webSocketService
+      .listen('all players left')
+      .subscribe(() => {
+        this.game.timeLeft = 0;
+        this.status = "All players left!";
+        this.gameFinished = true;
+
+        // Unsubscribe from all subscriptions
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
+        this.subscriptions = [];
+      });
     this.countdown = this.webSocketService
       .listen('time left')
       .subscribe(time => this.game.timeLeft = time);
@@ -111,6 +123,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
       });
 
     // Add subscriptions to array
+    this.subscriptions.push(this.allPlayersLeft);
     this.subscriptions.push(this.countdown);
     this.subscriptions.push(this.playerAnswered);
     this.subscriptions.push(this.nextQuestion);

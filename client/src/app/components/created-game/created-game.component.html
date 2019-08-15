@@ -25,6 +25,7 @@
         <div id="status">
             <h3 *ngIf="gameStarted || playerList.length === 0">{{ status }}</h3>
             <h3 *ngIf="gameStarted && !gameFinished">Question: {{ currentQuestion.question }}</h3>
+            <a *ngIf="gameFinished" id="mainMenuBtn" href="">Main Menu</a>
         </div>
     </div>
 </div>
