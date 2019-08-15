@@ -35,13 +35,14 @@ router.post('/', async (req, res) => {
     pinExists = await Game.findOne({ pin: randomPin });
   }
 
-  const game = new Game({
+  let game = new Game({
     gameStarted: false,
-    currentQuestionIndex: 0,
     pin: randomPin,
     questions: gameData
   });
   await game.save();
+  game = game.toJSON();
+  game.currentQuestionIndex = 0;
 
   res.status(200)
     .json(game);

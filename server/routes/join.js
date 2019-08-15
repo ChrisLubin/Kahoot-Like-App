@@ -22,7 +22,7 @@ router.get('/:pin', async (req, res) => {
   }
 
   // Query database
-  const game = await Game.findOne({ pin: pin });
+  const game = await Game.findOne({ pin: pin }).lean();
 
   if (!game) {
     res.status(404).json({
@@ -36,6 +36,7 @@ router.get('/:pin', async (req, res) => {
   game.questions.forEach(question => delete question.correctIndex);
 
   // Send response with game questions & choices
+  game.currentQuestionIndex = 0;
   res.status(200).json({
     message: 'Join successful.',
     length: pin.length,
