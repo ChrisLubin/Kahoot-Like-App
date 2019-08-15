@@ -31,6 +31,7 @@ export class JoinGameComponent implements OnInit {
   private swapPage: boolean;
   private connect: Subscription;
   private connected: boolean = false;
+  private gameStarted: boolean;
   @Output() goBack = new EventEmitter<string>();
   @Output() hideHeader = new EventEmitter<string>();
 
@@ -169,7 +170,7 @@ export class JoinGameComponent implements OnInit {
       });
   }
 
-  private joinGame():void {
+  private async joinGame() {
     try {
       // Validation checks
       if (!this.validUsername) {
@@ -191,6 +192,14 @@ export class JoinGameComponent implements OnInit {
     this.connectingToGame = true;
     this.foundStatus.animate1 = true;
     this.foundStatus.message = "Connecting...";
+
+    // Check if game already started
+    this.gameStarted = await this.gameService.didGameStart(this.gamePin);
+
+    if (this.gameStarted) {
+      this.updateStatusMessage("Game already started!", "could not connect");
+      return;
+    }
 
     // Check if name is taken
     this.gameService.getUsers(this.gamePin)

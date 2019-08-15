@@ -21,6 +21,10 @@ export class GameService {
     return this.http.get<any>(`${this.SERVER_ROOT}/join/${pin}`, {observe: 'response'});
   }
 
+  public didGameStart(pin: string):Promise<any> {
+    return this.http.get<any>(`${this.SERVER_ROOT}/didGameStart/${pin}`).toPromise();
+  }
+
   public getGamePin():string {
     return this.gamePin;
   }

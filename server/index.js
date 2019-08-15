@@ -24,9 +24,10 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/join', require('./routes/join'));
 app.use('/create', require('./routes/create'));
+app.use('/didGameStart', require('./routes/didGameStart'));
 app.use('/getUsers', require('./routes/getUsers'));
+app.use('/join', require('./routes/join'));
 
 // Temporary
 app.use('/delete', async (req, res) => {
