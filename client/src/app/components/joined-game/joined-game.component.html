@@ -45,5 +45,8 @@
         </div>
     </div>
     <!-- Status message -->
-    <h1 *ngIf="!answeringQuestion" id="status" class="header">{{ status }}</h1>
+    <div *ngIf="!answeringQuestion" id="statusContainer" class="rounded">
+        <h1 *ngIf="!answeringQuestion" class="header">{{ status }}</h1>
+        <a *ngIf="gameFinished" id="mainMenuBtn" href="">Main Menu</a>
+    </div>
 </div>

@@ -105,9 +105,8 @@ io.on('connection', socket => {
       }
       
       // Game was not started
+      socket.to(pin).emit('host left');
       await Game.deleteOne({ pin: pin });
-
-      // Let players know that host left & make all players leave room
       return;
     }
 

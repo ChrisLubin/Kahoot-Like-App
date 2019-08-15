@@ -26,6 +26,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
   private gameStart: Subscription;
   private newPlayer: Subscription;
   private playerLeft: Subscription;
+  private hostLeft: Subscription;
   private countdown: Subscription;
   private playerAnswered: Subscription;
   private correctAnswer: Subscription;
@@ -37,6 +38,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
   private playerList: Player[] = [];
   private gameStarted: boolean = false;
   private answeringQuestion: boolean = false;
+  private gameFinished: boolean = false;
   private animateText: boolean;
   private currentQuestion: Question;
   private highestScore: number = 0;
@@ -78,6 +80,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
         this.removeSubscription(this.gameStart);
         this.removeSubscription(this.newPlayer);
         this.removeSubscription(this.playerLeft);
+        this.removeSubscription(this.hostLeft);
         this.gameStarted = true;
         this.answeringQuestion = true;
         this.animateText = false;
@@ -91,6 +94,18 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
     this.playerLeft = this.webSocketService
       .listen('player left')
       .subscribe(username => this.playerList = this.playerList.filter(player => player.username !== username));
+    this.hostLeft = this.webSocketService
+      .listen('host left')
+      .subscribe(() => {
+        // Host left before starting game
+        this.animateText = false;
+        this.status = "Host left!";
+        this.gameFinished = true;
+        
+        // Unsubscribe from all subscriptions
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
+        this.subscriptions = [];
+      });
     this.countdown = this.webSocketService
       .listen('time left')
       .subscribe(time => {
@@ -128,6 +143,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
         this.subscriptions.forEach(subscription => subscription.unsubscribe()); // Unsubscribe from all subscriptions
         this.subscriptions = [];
         this.animateText = false;
+        this.gameFinished = true;
         this.status = "Game over!";
         this.updatePlacement(true);
         this.answeringQuestion = false;
@@ -137,6 +153,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.gameStart);
     this.subscriptions.push(this.newPlayer);
     this.subscriptions.push(this.playerLeft);
+    this.subscriptions.push(this.hostLeft);
     this.subscriptions.push(this.countdown);
     this.subscriptions.push(this.playerAnswered);
     this.subscriptions.push(this.correctAnswer);
