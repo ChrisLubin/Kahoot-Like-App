@@ -16,10 +16,10 @@ import { Subscription } from 'rxjs';
 })
 
 export class JoinedGameComponent implements OnInit, OnDestroy {
-  private show: boolean;
+  public show: boolean;
   private username: string;
-  private status: string = "Getting other players...";
-  private placement: string = "You're tied for 1st place";
+  public status: string = "Getting other players...";
+  public placement: string = "You're tied for 1st place";
   private removeTextAnimation;
   private addTextAnimation;
   private subscriptions: Subscription[] = [];
@@ -33,15 +33,15 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
   private allPlayersAnswered: Subscription;
   private nextQuestion: Subscription;
   private gameOver: Subscription;
-  private game: Game;
-  private gamePin: string;
-  private playerList: Player[] = [];
-  private gameStarted: boolean = false;
-  private answeringQuestion: boolean = false;
-  private gameFinished: boolean = false;
+  public game: Game;
+  public gamePin: string;
+  public playerList: Player[] = [];
+  public gameStarted: boolean = false;
+  public answeringQuestion: boolean = false;
+  public gameFinished: boolean = false;
   private animateText: boolean;
-  private currentQuestion: Question;
-  private highestScore: number = 0;
+  public currentQuestion: Question;
+  public highestScore: number = 0;
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
@@ -188,7 +188,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
       }, 900);
   }
 
-  private answerQuestion(index: number):void {
+  public answerQuestion(index: number):void {
     this.answeringQuestion = false;
     this.status = "Waiting for other players to answer";
     this.animateText = true;

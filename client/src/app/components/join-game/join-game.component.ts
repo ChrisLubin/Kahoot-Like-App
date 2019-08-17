@@ -18,19 +18,19 @@ import { Game } from '../../models/game.interface';
 })
 
 export class JoinGameComponent implements OnInit {
-  private findingGame: boolean;
-  private foundGame: boolean;
-  private connectingToGame: boolean;
-  private gamePin: string;
-  private username: string;
+  public findingGame: boolean;
+  public foundGame: boolean;
+  public connectingToGame: boolean;
+  public gamePin: string;
+  public username: string;
   private gamePinRegex: RegExp;
-  private validGamePin: boolean;
-  private validUsername: boolean;
-  private invalidText: string;
-  private foundStatus;
-  private swapPage: boolean;
+  public validGamePin: boolean;
+  public validUsername: boolean;
+  public invalidText: string;
+  public foundStatus;
+  public swapPage: boolean;
   private connect: Subscription;
-  private connected: boolean = false;
+  public connected: boolean = false;
   private gameStarted: boolean;
   @Output() goBack = new EventEmitter<string>();
   @Output() hideHeader = new EventEmitter<string>();
@@ -63,7 +63,7 @@ export class JoinGameComponent implements OnInit {
     });
   }
 
-  private checkGamePinInput(): void {
+  public checkGamePinInput(): void {
     // Clears invalid text when input empty
     if (this.gamePin.length === 0) {
       this.validGamePin = true;
@@ -86,7 +86,7 @@ export class JoinGameComponent implements OnInit {
     this.validGamePin = true;
   }
 
-  private checkUsernameInput(): void {
+  public checkUsernameInput(): void {
     this.username = this.username.trim().replace(/\s+/g,' '); // Remove excess spaces
 
     // Validation checks
@@ -104,7 +104,7 @@ export class JoinGameComponent implements OnInit {
     this.validUsername = true;
   }
 
-  private findGame(): void {
+  public findGame(): void {
     try {
       // Validation checks
       if (!this.validGamePin) {
@@ -170,7 +170,7 @@ export class JoinGameComponent implements OnInit {
       });
   }
 
-  private async joinGame() {
+  public async joinGame() {
     try {
       // Validation checks
       if (!this.validUsername) {
@@ -276,7 +276,7 @@ export class JoinGameComponent implements OnInit {
     }, (2 * animateTimer));
   }
 
-  private goBackToMain():void {
+  public goBackToMain():void {
     this.goBack.next();
   }
 

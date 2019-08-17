@@ -12,11 +12,11 @@ import { GameService } from '../../services/game.service';
 })
 
 export class CreateGameComponent implements OnInit, OnDestroy {
-  private questions: Question[];
-  private inputFields;
-  private creatingGame: boolean = false;
-  private gameCreated: boolean = false;
-  private status: string;
+  public questions: Question[];
+  public inputFields;
+  public creatingGame: boolean = false;
+  public gameCreated: boolean = false;
+  public status: string;
   @Output() goBack = new EventEmitter<string>();
   @Output() hideHeader = new EventEmitter<string>();
 
@@ -35,7 +35,7 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addQuestion():void {
+  public addQuestion():void {
     const valid = this.areInputsValid();
 
     if (!valid) { return }
@@ -58,7 +58,7 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteQuestion(questionToDelete: Question):void {
+  public deleteQuestion(questionToDelete: Question):void {
     this.questions = this.questions.filter(question => question !== questionToDelete);
   }
 
@@ -82,11 +82,11 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     return valid;
   }
 
-  private correctAnswerIsValid():void {
+  public correctAnswerIsValid():void {
     this.inputFields.correctIndex.valid = true;
   }
 
-  private createGame():void {
+  public createGame():void {
     if (!this.questions.length) {
       // No questions created
       for (let key of Object.keys(this.inputFields)) {
@@ -112,7 +112,7 @@ export class CreateGameComponent implements OnInit, OnDestroy {
       });
   }
 
-  private goBackToMain():void {
+  public goBackToMain():void {
     this.goBack.next();
   }
 }

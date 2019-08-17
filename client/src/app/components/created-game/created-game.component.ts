@@ -16,14 +16,14 @@ import { Player } from '../../models/player.interface';
 })
 
 export class CreatedGameComponent implements OnInit, OnDestroy {
-  private show: boolean = false;
-  private game: Game;
-  private gameStarted: boolean = false;
-  private gameFinished: boolean = false;
-  private pin: number;
-  private playerList: Player[] = [];
-  private currentQuestion: Question;
-  private highestScore: number = 0;
+  public show: boolean = false;
+  public game: Game;
+  public gameStarted: boolean = false;
+  public gameFinished: boolean = false;
+  public pin: number;
+  public playerList: Player[] = [];
+  public currentQuestion: Question;
+  public highestScore: number = 0;
   private subscriptions: Subscription[] = [];
   private newPlayer: Subscription;
   private playerLeft: Subscription;
@@ -32,7 +32,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
   private playerAnswered: Subscription;
   private nextQuestion: Subscription;
   private gameOver: Subscription;
-  private status: string = "Waiting for players to join...";
+  public status: string = "Waiting for players to join...";
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
@@ -69,7 +69,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
     this.subscriptions = [];
   }
 
-  private startGame():void {
+  public startGame():void {
     this.removeSubscription(this.newPlayer);
     this.removeSubscription(this.playerLeft);
     this.gameStarted = true;

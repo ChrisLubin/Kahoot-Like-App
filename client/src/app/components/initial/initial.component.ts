@@ -14,9 +14,9 @@ import { blockInitialRender } from '../../animations/blockInitialRender.animatio
 })
 
 export class InitialComponent implements OnInit {
-  private joinGame: boolean; // True if user clicks first join game button
-  private createGame: boolean; // True if user clicks first create game button
-  private showHeader: boolean;
+  public joinGame: boolean; // True if user clicks first join game button
+  public createGame: boolean; // True if user clicks first create game button
+  public showHeader: boolean;
 
   public ngOnInit(): void {
     this.showHeader = true;
