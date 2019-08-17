@@ -40,9 +40,33 @@
     }
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (min-width: 1000px) and (max-width: 1350px) {
     .rounded {
-        width: 75vh !important;
+        width: 60vw !important;
+    }
+
+    #question {
+        width: calc(60vw - 20px) !important;
+    }
+}
+
+@media only screen and (min-width: 1350px) and (max-width: 1650px) {
+    .rounded {
+        width: 45vw !important;
+    }
+
+    #question {
+        width: calc(45vw - 20px) !important;
+    }
+}
+
+@media only screen and (min-width: 1650px) {
+    .rounded {
+        width: 40vw !important;
+    }
+
+    #question {
+        width: calc(40vw - 20px) !important;
     }
 }
 
@@ -149,6 +173,7 @@ ul {
 #question {
     display: flex;
     height: 100%;
+    width: calc(80vw - 20px);
     padding: 10px;
     font-family: Arial, Helvetica, sans-serif;
 }
