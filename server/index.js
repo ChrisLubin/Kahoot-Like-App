@@ -29,14 +29,6 @@ app.use('/didGameStart', require('./routes/didGameStart'));
 app.use('/getUsers', require('./routes/getUsers'));
 app.use('/join', require('./routes/join'));
 
-// Temporary
-app.use('/delete', async (req, res) => {
-  await User.deleteMany();
-  await Game.deleteMany();
-  res.status(200)
-    .json("Deleted");
-});
-
 // No routes found for request
 app.use((req, res) => {
   res.status(404)
