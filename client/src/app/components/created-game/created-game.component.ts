@@ -32,7 +32,11 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
   private playerAnswered: Subscription;
   private nextQuestion: Subscription;
   private gameOver: Subscription;
-  public status: string = "Waiting for players to join...";
+  private firstAnimationTimeout;
+  private secondAnimationTimeout;
+  private removeTextAnimation;
+  private addTextAnimation;
+  public status: string;
 
   constructor(private gameService: GameService, private webSocketService: WebSocketService) { }
 
@@ -43,6 +47,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
     this.game = this.gameService.getGame();
     this.pin = this.game.pin;
     this.currentQuestion = this.game.questions[0];
+    this.startStatusAnimation("Waiting for players to join");
     this.webSocketService
       .connect(true)
       .then(() => {
@@ -69,10 +74,37 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
     this.subscriptions = [];
   }
 
+  private startStatusAnimation(text: string):void {
+    this.status = text;
+    clearInterval(this.removeTextAnimation);
+    this.addTextAnimation = setInterval(() => {
+      this.status = this.status.concat('.'); // Add period to end
+    }, 150);
+    this.firstAnimationTimeout = setTimeout(() => {
+      clearInterval(this.addTextAnimation);
+      this.removeTextAnimation = setInterval(() => {
+        this.status = this.status.slice(0, -1); // Remove last character
+      }, 150)
+    }, 450);
+    this.secondAnimationTimeout = setTimeout(() => {
+      clearInterval(this.removeTextAnimation);
+      this.status = text; // Keeps animation in sync
+      this.startStatusAnimation(text); // Keeps looping
+    }, 900);
+  }
+
+  private stopStatusAnimation():void {
+    clearInterval(this.addTextAnimation);
+    clearInterval(this.removeTextAnimation);
+    clearTimeout(this.firstAnimationTimeout);
+    clearTimeout(this.secondAnimationTimeout);
+  }
+
   public startGame():void {
     this.removeSubscription(this.newPlayer);
     this.removeSubscription(this.playerLeft);
     this.gameStarted = true;
+    this.stopStatusAnimation();
     this.status = `Players are answering question ${this.game.currentQuestionIndex + 1} out of ${this.game.questions.length}.`;
     this.webSocketService
       .emit('game start', this.pin);
@@ -80,7 +112,7 @@ export class CreatedGameComponent implements OnInit, OnDestroy {
       .listen('all players left')
       .subscribe(() => {
         this.game.timeLeft = 0;
-        this.status = "All players left!";
+        this.status = "All the players left!";
         this.gameFinished = true;
 
         // Unsubscribe from all subscriptions
