@@ -18,8 +18,10 @@ import { Subscription } from 'rxjs';
 export class JoinedGameComponent implements OnInit, OnDestroy {
   public show: boolean;
   private username: string;
-  public status: string = "Getting other players...";
+  public status: string;
   public placement: string = "You're tied for 1st place";
+  private firstAnimationTimeout;
+  private secondAnimationTimeout;
   private removeTextAnimation;
   private addTextAnimation;
   private subscriptions: Subscription[] = [];
@@ -39,7 +41,6 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
   public gameStarted: boolean = false;
   public answeringQuestion: boolean = false;
   public gameFinished: boolean = false;
-  private animateText: boolean;
   public currentQuestion: Question;
   public highestScore: number = 0;
 
@@ -53,14 +54,14 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
     this.gamePin = this.gameService.getGamePin();
     this.username = this.gameService.getMyUsername();
     this.currentQuestion = this.game.questions[0];
-    this.animateText = true;
+    this.startStatusAnimation("Getting other players");
     this.playerList.push({
       username: this.username,
       score: 0
     });
     this.gameService.getUsers(this.gamePin)
       .then(users => {
-        this.status = "Waiting for host to start game";
+        this.stopStatusAnimation();
         this.startStatusAnimation("Waiting for host to start game");
         users.forEach(user => {
           this.playerList.push({
@@ -83,7 +84,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
         this.removeSubscription(this.hostLeft);
         this.gameStarted = true;
         this.answeringQuestion = true;
-        this.animateText = false;
+        this.stopStatusAnimation();
       });
     this.newPlayer = this.webSocketService
       .listen('new player')
@@ -98,8 +99,8 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
       .listen('host left')
       .subscribe(() => {
         // Host left before starting game
-        this.animateText = false;
-        this.status = "Host left!";
+        this.stopStatusAnimation();
+        this.status = "The host left!";
         this.gameFinished = true;
         
         // Unsubscribe from all subscriptions
@@ -132,7 +133,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
     this.nextQuestion = this.webSocketService
       .listen('next question')
       .subscribe(() => {
-        this.animateText = false;
+        this.stopStatusAnimation();
         this.game.currentQuestionIndex++;
         this.currentQuestion = this.game.questions[this.game.currentQuestionIndex];
         this.answeringQuestion = true;
@@ -142,7 +143,7 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.subscriptions.forEach(subscription => subscription.unsubscribe()); // Unsubscribe from all subscriptions
         this.subscriptions = [];
-        this.animateText = false;
+        this.stopStatusAnimation();
         this.gameFinished = true;
         this.status = "Game over!";
         this.updatePlacement(true);
@@ -169,29 +170,33 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
   }
 
   private startStatusAnimation(text: string):void {
+    this.status = text;
+    clearInterval(this.removeTextAnimation);
+    this.addTextAnimation = setInterval(() => {
+      this.status = this.status.concat('.'); // Add period to end
+    }, 150);
+    this.firstAnimationTimeout = setTimeout(() => {
+      clearInterval(this.addTextAnimation);
+      this.removeTextAnimation = setInterval(() => {
+        this.status = this.status.slice(0, -1); // Remove last character
+      }, 150)
+    }, 450);
+    this.secondAnimationTimeout = setTimeout(() => {
       clearInterval(this.removeTextAnimation);
-      this.addTextAnimation = setInterval(() => {
-        this.status = this.status.concat('.'); // Add period to end
-      }, 150);
-      setTimeout(() => {
-        clearInterval(this.addTextAnimation);
-        this.removeTextAnimation = setInterval(() => {
-          this.status = this.status.slice(0, -1); // Remove last character
-        }, 150)
-      }, 450);
-      setTimeout(() => {
-        clearInterval(this.removeTextAnimation);
-        if (this.animateText) { 
-          this.status = text; // Keeps animation in sync
-          this.startStatusAnimation(text); // Keeps looping
-        }
-      }, 900);
+      this.status = text; // Keeps animation in sync
+      this.startStatusAnimation(text); // Keeps looping
+    }, 900);
+  }
+
+  private stopStatusAnimation():void {
+    clearInterval(this.addTextAnimation);
+    clearInterval(this.removeTextAnimation);
+    clearTimeout(this.firstAnimationTimeout);
+    clearTimeout(this.secondAnimationTimeout);
   }
 
   public answerQuestion(index: number):void {
     this.answeringQuestion = false;
-    this.status = "Waiting for other players to answer";
-    this.animateText = true;
     this.startStatusAnimation("Waiting for other players to answer");
     this.playerList.forEach(player => {
       if (player.username === this.username) {
@@ -208,8 +213,8 @@ export class JoinedGameComponent implements OnInit, OnDestroy {
   }
 
   private updateScoreboard(correctAnswer: number):void {
-    this.animateText = false;
-    this.status = "Loading next question";
+    this.stopStatusAnimation();
+    this.startStatusAnimation("Loading next question");
     this.game.timeLeft = 0;
     this.playerList.forEach(player => {
       if (player.answerIndex === correctAnswer) {
