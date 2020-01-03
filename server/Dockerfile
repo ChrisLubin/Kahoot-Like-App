@@ -7,12 +7,11 @@ RUN yarn install
 RUN ls -lhS
 
 # Runner
-FROM mhart/alpine-node:latest AS runtime
-WORKDIR /app
-COPY --from=builder ./app/package.json .
-COPY --from=builder ./dist ./dist
+# FROM mhart/alpine-node:latest AS runtime
+# WORKDIR /app
+# COPY --from=builder ./app/package.json .
 # COPY --from=builder ./app/node_modules ./node_modules
 
 EXPOSE 8080
 
-CMD ["yarn", "start"]
+CMD ["npm", "run", "start"]
