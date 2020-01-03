@@ -14,4 +14,4 @@ RUN ls -lhS
 
 EXPOSE 8083
 
-CMD ["ng", "serve"]
+CMD ["npm", "run", "start"]

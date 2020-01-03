@@ -18,7 +18,7 @@ connectDB();
 app.use(express.json()); // Parse JSON bodies (POST requests)
 app.use((req, res, next) => {
   // Bypass CORS error on client
-  res.setHeader('Access-Control-Allow-Origin', clientURL); // Your client root url here
+  res.setHeader('Access-Control-Allow-Origin', "*"); // Your client root url here
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });

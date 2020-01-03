@@ -24,6 +24,8 @@ services:
     - mongodb
     volumes:
     - ./server/config/default.json:/app/config/default.json
+    environment:
+    - PORT=8083
     links:
     - mongodb:mongodb
     networks:

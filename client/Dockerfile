@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 RUN npm install
 RUN npm run build
-RUN ls -lhS
+# RUN ls -lhS
 
 # Runtime
 # FROM mhart/alpine-node:latest AS runtime
