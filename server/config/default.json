@@ -1,4 +1,4 @@
 {
-    "mongoURI": "mongodb+srv://kahoot:kahoot@momgodb/Kahoot-Like-App?retryWrites=true&w=majority",
-    "clientRootURL": "http://127.0.0.1:4200"
+    "mongoURI": "mongodb://kahoot:kahoot@mongodb:27017/Kahoot-Like-App?retryWrites=true&w=majority",
+    "clientRootURL": "http://client:4200"
 }
