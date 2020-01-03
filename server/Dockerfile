@@ -12,6 +12,6 @@ RUN ls -lhS
 # COPY --from=builder ./app/package.json .
 # COPY --from=builder ./app/node_modules ./node_modules
 
-EXPOSE 8080
+EXPOSE 8083
 
 CMD ["npm", "run", "start"]
