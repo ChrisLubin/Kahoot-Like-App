@@ -1,0 +1,17 @@
+.git
+.git/
+.git/*
+.git/**
+Dockerfile
+*.md
+Makefile
+docker-compose.yml
+data
+data/
+data/*
+data/**
+node_modules
+node_modules/
+node_modules/*
+node_modules/**
+/node_modules
