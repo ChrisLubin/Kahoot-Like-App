@@ -4,7 +4,7 @@
   "description": "Backend for Christopher's Kahoot App",
   "main": "index.js",
   "dependencies": {
-    "config": "^3.2.2",
+    "config": "^3.3.8",
     "express": "^4.17.1",
     "mongoose": "^6.7.2",
     "socket.io": "^2.2.0"
